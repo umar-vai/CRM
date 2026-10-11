@@ -1,6 +1,49 @@
 # Verification reports
 
+## Initial live Hostinger/Supabase preview — 2026-10-12
+
+Deployed source `033e9e929dd3309603276fee11d0486bf4b37b78` at
+[crm.abdullahfahad.com](https://crm.abdullahfahad.com). This supersedes the earlier
+preparation checkpoints below; it is not production readiness or auto-deployment.
+
+- Verified source/build archive hashes after transfer; locked Composer production
+  dependencies installed; frontend build and config/route/view caches succeeded.
+- Seven existing Laravel migrations ran; sixteen private-schema tables are migration-role
+  owned, no public tables. Named runtime grants applied, immutable audit/config history
+  cannot be updated/deleted/truncated by runtime; schema CREATE and migrations read denied.
+- Hostinger restricted PDO connectivity succeeds with provider CA, verify-full and
+  private search path. Backend pooler-to-Postgres pg_stat_ssl flag false remains a
+  separate internal-transport limitation, not a claim of TLS across every hop.
+- Runtime CLI synthetic transaction: two workspaces/authenticated memberships,
+  lead create/read/update, config publish/stale-version denial, redacted audit inserts,
+  foreign-tenant read/write denial, context fail-closed and complete tenant-row rollback.
+  This is not a browser-auth or HTTP permission/concurrency test. Sequence gaps are expected.
+- Migrator disabled NOLOGIN after migrations. Runtime credential expires 2027-01-09
+  20:17:15 UTC; rotation not automated. Temporary provisioning/diagnostic scripts and
+  verifier JSON removed from server; env/certificate remain owner-only private files.
+- HTTPS home/login/register/up returned 200 and actual NovaFlow markup. Browser home
+  and login rendered. /up is framework health, not DB/business readiness.
+- HTTP probes for .env, composer.json, vendor, storage logs and private config returned
+  403; old default.php 404. Parent WordPress still 200/PHP 8.2.34; CRM PHP 8.4.26.
+- Live session cookie Secure/HttpOnly/SameSite=Lax; XSRF cookie Secure/SameSite=Lax
+  and intentionally JavaScript-readable. Public favicon returned 200.
+- Supabase security advisors after application migrations returned no findings;
+  private schema is not exposed through Data API, tenant RLS is not implemented.
+- Deployed commit's [SQLite/PostgreSQL CI jobs](https://github.com/umar-vai/CRM/actions/runs/38171796567)
+  both succeeded. Local gate: Pint, PHPStan zero errors, 79 PHP tests passed/385 assertions,
+  TypeScript/frontend formatting/lint, 3 frontend tests and build; 2 PG-only tests
+  skipped locally (81 total), exercised by PG CI. Live Supabase was not used for destructive CI.
+
+Not completed: SMTP verification/reset delivery; authenticated registration/login/workspace/
+lead/team browser E2E; 2FA/passkey browser testing; automatic GitHub deployment; independent
+SSH host fingerprint validation; credential rotation; release rollback/DB restore drill;
+mobile/accessibility/load/security audit. Staging log mailer does not deliver email.
+No default user or publicly disclosed password was created. Existing default-page backups
+are not a proven functional CRM rollback. See [runbook](HOSTINGER_PREVIEW_BN.md).
+
 ## Private preview database/bootstrap — 2026-10-12
+
+Historical preparation checkpoint; superseded by the live report above.
 
 The newly connected Team Fahad account reaches the selected project. Read-only SQL
 confirmed PostgreSQL 17.11, no pre-existing NovaFlow roles/schema, and no public tables.
@@ -33,6 +76,8 @@ at this checkpoint. The full local gate and frontend build passed again (79 PHP 
 385 assertions, 3 frontend tests; 2 PostgreSQL-only tests skipped locally).
 
 ## External preview preparation — 2026-10-12
+
+Historical preparation checkpoint; superseded by the live report above.
 
 Implementation commit `1d3beb8` adds configurable private PostgreSQL search path and
 CA certificate options, with two isolated configuration tests (9 assertions).

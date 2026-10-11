@@ -83,13 +83,16 @@ not a stress test or proof of every possible concurrent schedule.
 Containerized PHP application + web server, PostgreSQL, Redis queues/cache, object storage,
 TLS load balancer, separate staging, CI migrations and tested backup restoration.
 Use managed services initially when their support and operational cost suit the budget.
-No live deployment is configured by this milestone.
-For the user-prioritized synthetic-data preview, the selected alternative is existing
-Hostinger PHP hosting plus external managed PostgreSQL, not a stack replacement or a
-production-readiness claim. `DB_SEARCH_PATH` supports an unexposed private application
+The user-prioritized synthetic-data preview is now live at `crm.abdullahfahad.com`,
+using existing Hostinger PHP hosting plus external Supabase PostgreSQL. It is not a
+stack replacement or a production-readiness claim. Private app/releases/configuration
+are outside public_html; only the entrypoint and built assets are public. Runtime
+credentials have named-table privileges and the migration role is NOLOGIN after setup.
+SMTP, authenticated browser E2E, automatic deployment and recovery drills remain gates.
+`DB_SEARCH_PATH` supports an unexposed private application
 schema; `DB_SSLROOTCERT` supports CA verification with `DB_SSLMODE=verify-full`.
 These settings do not provision a schema, enforce role privileges, or implement tenant RLS.
-See the [preview runbook](HOSTINGER_PREVIEW_BN.md) for remote prerequisites and remaining gates.
+See the [preview runbook](HOSTINGER_PREVIEW_BN.md) for tested/untested evidence and remaining gates.
 Production must disable APP_DEBUG and use distinct rotated secrets.
 Use `composer install --no-dev --optimize-autoloader` for production artifacts.
 Local setup uses the normal PSR autoloader to avoid an expensive Windows classmap scan.

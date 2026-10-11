@@ -3,6 +3,11 @@
 BizNova-inspired **original implementation**, not a copy of proprietary source code.
 Current milestone: a working multi-workspace CRM foundation with owner-managed teams. **Not production-ready ERP.**
 
+Online foundation preview: [crm.abdullahfahad.com](https://crm.abdullahfahad.com).
+First Hostinger/Supabase operator release is live; SMTP and GitHub auto-deployment are not configured.
+Public pages render, but registration email verification/password-reset delivery and authenticated
+browser E2E remain unverified. Use synthetic data only. See the [deployment runbook](docs/HOSTINGER_PREVIEW_BN.md).
+
 ## Implemented
 
 - Official Laravel React starter authentication: registration, login, password reset, email verification and 2FA.
@@ -59,7 +64,7 @@ npm run build
 - [Security checklist](docs/SECURITY.md)
 - [Milestones and current status](docs/ROADMAP.md)
 - [Phase 1 team-management report and Bengali usage guide](docs/PHASE_1_TEAM_BN.md)
-- [Hostinger + external PostgreSQL preview runbook](docs/HOSTINGER_PREVIEW_BN.md): selected target, safe server configuration and outstanding deployment gates; not a live-deployment claim.
+- [Hostinger + external PostgreSQL preview runbook](docs/HOSTINGER_PREVIEW_BN.md): actual deployed SHA, private server layout, runtime privilege checks and remaining email/automation/recovery gates.
 - [GPT continuation instructions](AGENTS.md)
 
 The blueprint describes the target product, **not a claim that every feature exists**.

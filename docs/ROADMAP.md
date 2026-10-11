@@ -21,39 +21,35 @@ invitation email delivery are deferred. See [Bengali phase report](PHASE_1_TEAM_
 
 ## Next increments
 
-### User-prioritized online preview — configuration preparation verified locally
+### User-prioritized online preview — initial operator release live
 
-The user selected existing Hostinger Business hosting and a dedicated existing Supabase
-PostgreSQL project for `crm.abdullahfahad.com`. DNS and an HTTPS default hosting page were
-verified; NovaFlow is **not deployed**, and auto-deployment is **not configured**.
-PostgreSQL search-path and CA-certificate configuration support and isolated configuration
-tests are added. Local completion gate passed: Pint, PHPStan (zero errors),
-79 PHP tests with 385 assertions, frontend formatting/lint, TypeScript, 3 UI tests and build.
-Two PostgreSQL concurrency tests were skipped locally because no PostgreSQL test server
-is available. Configuration tests do not prove remote TLS, role grants or connectivity.
-Both SQLite and PostgreSQL GitHub CI jobs passed for implementation commit `1d3beb8`:
-[preview configuration CI](https://github.com/umar-vai/CRM/actions/runs/38168540383).
-User-approved local SSH key access is established; the private application parent is writable.
-CRM-only PHP handler and the hosting user's PHP 8.4 extension configuration are set up;
-web and explicit CLI PHP 8.4.26 both load `pdo_pgsql`. Only the approved driver was enabled;
-other extensions/options were preserved. Default CLI remains PHP 8.1; the parent WordPress
-homepage still returns HTTP 200 with PHP 8.2.34. The temporary runtime probe was removed (404).
-Hostinger-to-session-pooler TLS 1.3 certificate/hostname verification passed using Supabase's CA;
-this is not database authentication or a Laravel PDO test. In-app browser runtime-probe access
-remained on Hostinger's automatic browser-check page; browser rollout needs a separate recheck.
-The selected Team Fahad connector now reaches the correct project. Private `novaflow`
-schema and separate non-admin migration/runtime roles were provisioned and verified on
-PostgreSQL 17.11. The transactional permission probe passed and left no objects/data.
-Supabase security advisors returned no findings. Credentials were generated only in
-Hostinger's private configuration; restricted PDO logins with `verify-full` now succeed.
-Only SCRAM verifiers, not plaintext passwords, were sent to role provisioning.
-Runtime password expires after 90 days; initial migration password after one day.
-PostgreSQL reports the pooler-to-database upstream SSL flag as false; client-to-pooler
-TLS verification is a distinct test, not a claim of TLS on every internal hop.
-Initial private server configuration and public-file backups exist. Laravel migrations,
-final runtime table grants, live application publishing, email delivery, auto-deployment
-and deployment/restore recovery are not yet verified at this preparation checkpoint.
-See [preview runbook](HOSTINGER_PREVIEW_BN.md). This does not change the next CRM feature milestone.
+[crm.abdullahfahad.com](https://crm.abdullahfahad.com) now serves NovaFlow from existing
+Hostinger Business hosting and the selected Team Fahad Supabase PostgreSQL project.
+Deployed source SHA: `033e9e929dd3309603276fee11d0486bf4b37b78`; no stack replacement.
+Private app/vendor/storage/config/certificate are outside public_html; public assets
+and entrypoint replaced the backed-up default page. Parent WordPress is unchanged.
+Seven Laravel migrations and explicit named runtime grants are applied in private
+`novaflow` schema. Runtime cannot mutate audit/config history or perform DDL; migrator
+NOLOGIN after setup. Restricted Hostinger PDO uses verify-full and provider CA.
+Backend pooler-to-database SSL flag false is separate from verified client-to-pooler
+TLS. Database tenant RLS is not implemented.
+Home/login/register/health returned 200; browser home/login rendered; private-file
+HTTP probes denied. Runtime CLI two-workspace transaction smoke passed lead CRUD,
+config stale-version checks, tenant read/write denial and audit rollback.
+Test rows were rolled back and context cleared. This is not full browser E2E.
+Local full gate passed: 79 PHP tests/385 assertions, Pint, PHPStan, TypeScript,
+frontend checks, 3 frontend tests and build; 2 PG-only tests skipped locally.
+Deployed commit's [SQLite/PostgreSQL CI](https://github.com/umar-vai/CRM/actions/runs/38171796567)
+both passed, including PG locking tests. Post-migration Supabase security advisors
+returned no findings, not complete security certification.
+
+Remaining gates: SMTP verification/reset delivery; authenticated workspace/lead/team
+browser E2E; scoped CI-gated automatic deployment/independent SSH host verification;
+release rollback/isolated DB restore; rotation before runtime expiry
+2027-01-09 20:17:15 UTC. Log mailer is not delivery; no verification bypass/default
+account was added. No automatic updates yet.
+See [runbook](HOSTINGER_PREVIEW_BN.md) and [verification](VERIFICATION.md).
+This infrastructure milestone does not change the next CRM product increment.
 
 ### Product increments
 

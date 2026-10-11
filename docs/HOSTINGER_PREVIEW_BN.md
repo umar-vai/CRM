@@ -1,125 +1,147 @@
 # Hostinger + বাইরের PostgreSQL: CRM preview runbook
 
-এটি deployment-এর প্রস্তুতি ও কাজের তালিকা; live CRM বা auto-deployment সম্পন্ন হওয়ার দাবি নয়।
+## এখন কী চালু আছে — 2026-10-12
 
-## নির্বাচিত ব্যবস্থা
+[অনলাইন NovaFlow](https://crm.abdullahfahad.com) এখন আসল Laravel/Inertia app; Hostinger default page নয়।
+Deployed source: `033e9e929dd3309603276fee11d0486bf4b37b78`। এটি প্রথম operator deployment, **GitHub auto-deployment নয়**।
+Home, login, registration ও Laravel health page HTTP 200; browser-এ home/login render হয়েছে।
+SMTP configured নয়: account খুললেও verification email পৌঁছাবে না; verified workspace browser flow এখনো acceptance gate পাস করেনি।
+কোনো public default account/password বানানো হয়নি। এটি synthetic preview, production-ready ERP নয়; বাস্তব customer/financial data ব্যবহার করবেন না।
 
-- ঠিকানা: `https://crm.abdullahfahad.com`। Cloudflare-এ নতুন CNAME যোগ করা হয়েছে; অন্য records বদলানো হয়নি।
-- Laravel/Inertia app থাকবে বর্তমান Hostinger Business hosting-এ; নতুন VPS কেনা হবে না।
-- ব্যবহারকারী নির্বাচিত Supabase project: `zmmpipwcxullyzdbecpl`, Team Fahad Org, Mumbai।
-- Supabase শুধু PostgreSQL সরবরাহ করবে। Laravel authentication, email verification, tenant ownership এবং backend permission checks অপরিবর্তিত থাকবে।
-- এটি synthetic/test-data preview; বাস্তব business/customer data বা production SLA নয়।
+## ব্যবস্থা ও private files
 
-## সর্বশেষ যাচাই করা অবস্থা
+- Cloudflare CNAME `crm.abdullahfahad.com.cdn.hstgr.net`, DNS only; অন্য records অপরিবর্তিত।
+- Existing Hostinger Business account `u148519723`; নতুন VPS/service কেনা হয়নি।
+- Supabase `zmmpipwcxullyzdbecpl`, Team Fahad Org, Mumbai, PostgreSQL 17.11। নতুন connected Team Fahad account ব্যবহার হয়েছে; অন্য accounts নয়।
+- Supabase শুধু PostgreSQL; Laravel auth, verification, TenantContext ও backend permissions অপরিবর্তিত।
 
-- DNS CNAME target: `crm.abdullahfahad.com.cdn.hstgr.net`, DNS only।
-- HTTPS 200 পাওয়া গেছে, কিন্তু response হলো Hostinger-এর **Default page**, NovaFlow নয়।
-- Supabase dashboard-এ project Healthy এবং `public` schema-তে কোনো table দেখা যায়নি। অন্য schemas খালি বলে দাবি করা হয়নি।
-- Browser-এর Supabase account-এ project দেখা যায়; বর্তমানে connected দুই Supabase connector account-এ এই project নেই। কোনো credential/token কপি করা হয়নি।
-- User-approved `novaflow-preview-local` SSH key দিয়ে hosting account login পরীক্ষিত। Private key repo-এর বাইরে স্থানীয় Windows user/System/Administrators permissions-এ সীমাবদ্ধ; key-তে passphrase নেই। GitHub বা অন্য service-এ private key দেওয়া হয়নি। এটি account-wide access, শুধু CRM folder-এ সীমিত credential নয়; স্বয়ংক্রিয় expiry নেই। Access revoke করতে hPanel → SSH Access থেকে এই নামের key সরাতে হবে; তারপর স্থানীয় key-ও নিরাপদে সরাতে হবে।
-- SSH host key প্রথম connection-এ trust-on-first-use করে আলাদা local known-hosts file-এ pin করা হয়েছে; পরের connection-এ strict checking সফল। Provider-এর independent fingerprint verification এখনো করা হয়নি; GitHub deployment trust setup-এ এই সীমাবদ্ধতা বিবেচনা করতে হবে।
-- Explicit CLI binary `/opt/alt/php84/usr/bin/php` দিয়ে PHP 8.4.26 ও Composer 2.9.8 পরীক্ষিত। CRM-এর নিজস্ব `.htaccess` handler দিয়ে HTTPS web runtime-ও PHP 8.4.26। Web ও CLI দুটিতেই `pdo_pgsql`, `mbstring`, `openssl` loaded যাচাই করা হয়েছে। Default CLI PHP 8.1.34 অপরিবর্তিত; পরিবর্তনের পরে মূল WordPress homepage HTTP 200 এবং PHP 8.2.34 পাওয়া গেছে।
-- অনুমোদিত hPanel extension পরিবর্তনে শুধু `pdo_pgsql` চালু হয়েছে; parent PHP version এবং options বদলানো হয়নি। এটি PHP 8.2-তে কার্যকর হলেও PHP 8.4-তে হয়নি। তাই hosting user-owned `/etc/cl.php.d/alt-php84/alt_php.ini`-এর backup নিয়ে শুধু `extension=pdo_pgsql.so` entry যোগ করা হয়েছে। এটি account-এর PHP 8.4 configuration, শুধু CRM-isolated extension setting নয়। অন্য PHP 8.4 site থাকলে ওই driver সেখানেও available হবে। User-level LiteSpeed worker reload-এর পরে CRM HTTPS probe-তে driver loaded পাওয়া গেছে।
-- Runtime backup: `/home/u148519723/.novaflow-runtime-backups/php84-before-pgsql-20261012.ini`। Original SHA-256: `397eccc42e0025d1fe03ea3695516c6c7565e200b1f60190d2cf5117a05b4996`। ভবিষ্যৎ hPanel/PHP configuration update এই user-owned file বদলাতে পারে; update-এর পরে web/CLI driver পুনরায় যাচাই করতে হবে। Restore-এর আগে পরবর্তী অন্য পরিবর্তন আছে কি না diff দেখতে হবে; পুরো পুরোনো file অন্ধভাবে overwrite নয়।
-- CRM public directory-তে Hostinger `default.php` ও PHP handler `.htaccess` আছে। Temporary fixed-output probe সরানো হয়েছে এবং HTTPS 404 যাচাই হয়েছে; local ignored copy আছে। কোনো `phpinfo()`, environment dump বা public command runner রাখা হয়নি। Public root-এর বাইরে নির্বাচিত private app parent writable; app directory/release এখনো তৈরি হয়নি।
-- Hostinger থেকে dashboard-verified session pooler-এ TLS 1.3 handshake সফল; Supabase-এর dashboard-linked CA দিয়ে certificate ও hostname verification `OK`। পরীক্ষার temporary CA file-ও সরানো হয়েছে। Password/database authentication, Laravel PDO connection এবং SQL query এই পরীক্ষার অংশ নয়।
-- In-app browser-এ temporary probe খুলতে Hostinger-এর automatic browser-check page আটকে ছিল; তার screenshot-কে runtime proof বলা হয়নি। Runtime result HTTPS request দিয়ে যাচাই হয়েছে; hPanel screenshot-এ `pdo_pgsql` enabled দেখা গেছে। Preview browser access-এর এই বাধাও application rollout-এর আগে আবার পরীক্ষা করতে হবে।
-- App deployment, remote database provisioning/connection, mail delivery এবং automatic deployment এখনো অসম্পন্ন।
+```text
+/home/u148519723/domains/abdullahfahad.com/
+  novaflow-preview/                       private parent: 0700
+    current -> releases/033e9e929dd3309603276fee11d0486bf4b37b78
+    releases/<commit>/                     source/vendor/private config cache
+    shared/config/app.env                  runtime settings/secrets: 0600
+    shared/config/migration.env            disabled migrator settings: 0600
+    shared/config/supabase-ca.crt           provider CA: 0600
+    shared/storage/                        cache/views/logs/private files
+    shared/bootstrap-backup/               original default.php/.htaccess
+  public_html/crm/                         index.php/.htaccess/built assets
+```
 
-## Database connection: যা প্রস্তুত আছে
+পুরোনো default page ও .htaccess backup নেওয়া হয়েছে; placeholder private `default-original.php` backup-এ সরানো হয়েছে, recoverable।
+Source/.env/vendor/certificate/config cache public root-এর বাইরে। Public storage link, command runner, phpinfo, hot file বা dev server নেই।
+Temporary provisioning/smoke scripts ও SCRAM-verifier JSON server থেকে সরানো হয়েছে; private env/certificate/backups রাখা হয়েছে।
+Git-tracked source archive SHA-256 `725a5881ba2f8b90eb7f98f67c0f76981061dcabb33351643dc7edab41a4426e`।
+Frontend archive SHA-256 `d2ab4e0137cbada185ed049ec0ae7d6810b0aa64fd3d01be987848794750558a`।
+Uploaded archive hashes server-এ মেলানো হয়েছে।
 
-`config/database.php` এখন `DB_SEARCH_PATH` এবং `DB_SSLROOTCERT` নেয়। স্থানীয় default যথাক্রমে `public` এবং certificate unset; SQLite test setup অপরিবর্তিত।
+## PHP ও access
 
-Shared-hosting IPv4 connection-এর প্রথম পরীক্ষার জন্য dashboard-এর **Session pooler** endpoint ব্যবহার করা হবে; session/prepared-statement আচরণ বজায় রাখতে transaction pooler port 6543 দিয়ে শুরু করা হবে না।
-এই project-এর Connect dialog-এ পুনরায় যাচাই করা endpoint হলো `aws-0-ap-south-1.pooler.supabase.com:5432`। Region থেকে hostname অনুমান করা হয়নি। Hostinger থেকে password ছাড়া network/TLS verification পাস; authenticated database test এখনো বাকি।
+Explicit CLI `/opt/alt/php84/usr/bin/php` এবং CRM-only `application/x-lsphp84` handler: PHP 8.4.26; Composer 2.9.8।
+Web/CLI pdo_pgsql, mbstring, openssl verified। Default CLI 8.1.34 এবং parent WordPress homepage HTTP 200/PHP 8.2.34 অপরিবর্তিত।
+Approved hPanel action শুধু pdo_pgsql চালু করেছে; PHP 8.4-এর user-owned `/etc/cl.php.d/alt-php84/alt_php.ini` backup নিয়ে একই driver entry যোগ হয়েছে।
+এটি account-এর PHP 8.4 configuration; অন্য PHP 8.4 site-এও driver available হতে পারে, PHP extension isolation নয়।
+Backup `/home/u148519723/.novaflow-runtime-backups/php84-before-pgsql-20261012.ini`, original SHA-256 `397eccc42e0025d1fe03ea3695516c6c7565e200b1f60190d2cf5117a05b4996`।
+Provider update-এর পরে driver recheck; পরবর্তী edits থাকলে পুরোনো INI অন্ধভাবে overwrite নয়।
 
-Server-এর private configuration-এ শেষ পর্যন্ত নিচের মানগুলো থাকবে। এগুলো পরিকল্পিত placeholders, কার্যকর credentials নয়:
+Local SSH key `novaflow-preview-local` repo-এর বাইরে Windows user/System/Administrators permissions-এ সীমাবদ্ধ; passphrase/automatic expiry নেই, account-wide access।
+GitHub-এ দেওয়া হয়নি। hPanel SSH Access-এ key revoke করা যায়।
+Server host key trust-on-first-use pin; strict checking পাস, independent provider fingerprint verification বাকি। Future automation-এর আগে scoped access ও independently verified host identity প্রয়োজন।
+
+## Database: বাস্তবে সম্পন্ন
+
+- Private `novaflow` schema owner `novaflow_migrator`; `novaflow_runtime` owner/admin নয়, CREATE বা migration membership নেই। দুটো role-ই NOSUPERUSER/NOCREATEDB/NOCREATEROLE/NOREPLICATION/NOBYPASSRLS।
+- anon/authenticated/service_role/PUBLIC CRM schema access পায় না। Data API settings-এ শুধু public/graphql_public exposed দেখা গেছে; private schema যোগ করা হয়নি।
+- Hostinger-এ random APP_KEY/password তৈরি ও private files-এ সংরক্ষণ। Plaintext chat/repo/frontend/connector-এ যায়নি; provisioning-এ কেবল SCRAM verifiers। Administrative migration history-ও private রাখতে হবে।
+- Existing Laravel-এর ৭টি migration হয়েছে। ১৬টি table সব private schema-তে/migrator-owned; public-এ zero tables। migrate:fresh/reset/destructive rollback নয়।
+- Named runtime grants: users/sessions/cache/passkeys/memberships প্রয়োজনীয় DML; tenants/leads/invitations SELECT/INSERT/UPDATE; audit/configuration history SELECT/INSERT only।
+- Runtime DDL/TRUNCATE/migrations read/history UPDATE/DELETE বা persistent job-table access পায় না। Queue sync।
+- Initial migrator login কাজ শেষে **NOLOGIN**। Future migration-এর জন্য reviewed temporary activation/rotation, শেষে disable; automated workflow নেই।
+- Runtime credential expiry **2027-01-09 20:17:15 UTC**; তার আগে private rotation দরকার। Automatic rotation নেই।
+- Tenant isolation Laravel context/scopes/backend authorization দিয়ে; database-level tenant RLS implemented নয়। Private schema tenant isolation-এর বিকল্প নয়।
+
+### Connection ও transport
+
+Dashboard-verified session pooler `aws-0-ap-south-1.pooler.supabase.com:5432`; transaction pooler 6543 নয়।
+Hostinger restricted runtime/migrator PDO login, SQL ও novaflow search path সফল।
+Client-to-pooler TLS 1.3 certificate/hostname verification পাস; PDO verify-full ও private provider CA ব্যবহার করে।
+pg_stat_ssl pooler-to-PostgreSQL backend hop-এর SSL flag false দেখিয়েছে; সব internal hop encrypted বলা হচ্ছে না।
+Provider-internal transport policy production security review-এর বিষয়। Certificate verification bypass হয়নি।
 
 ```dotenv
 APP_ENV=staging
 APP_DEBUG=false
 APP_URL=https://crm.abdullahfahad.com
-APP_KEY=<generate-once-and-store-privately>
+APP_KEY=<private-stable-key>
 DB_CONNECTION=pgsql
-DB_HOST=<verified-session-pooler-host>
+DB_HOST=aws-0-ap-south-1.pooler.supabase.com
 DB_PORT=5432
 DB_DATABASE=postgres
-DB_USERNAME=<restricted-app-role>.<project-ref>
+DB_USERNAME=novaflow_runtime.zmmpipwcxullyzdbecpl
 DB_PASSWORD=<private-secret>
 DB_SEARCH_PATH=novaflow
 DB_SSLMODE=verify-full
-DB_SSLROOTCERT=<absolute-private-path-to-provider-ca-certificate>
-SESSION_SECURE_COOKIE=true
+DB_SSLROOTCERT=<absolute-private-provider-ca-path>
 SESSION_DRIVER=database
+SESSION_ENCRYPT=true
+SESSION_SECURE_COOKIE=true
 CACHE_STORE=database
+QUEUE_CONNECTION=sync
+MAIL_MAILER=log
 LOG_LEVEL=warning
 ```
 
-`DB_URL` দিয়ে একই settings override হয়ে যাচ্ছে কি না পরীক্ষা করতে হবে। Password বা connection URL browser frontend, VITE variables, repo, deployment logs বা chat-এ দেওয়া যাবে না।
-`verify-full` hostname এবং certificate যাচাই করবে; certificate provider dashboard থেকে সংগ্রহ করে server-এর private directory-তে স্থায়ীভাবে রাখতে হবে। Dashboard-এর certificate link দিয়ে temporary TLS test সফল হলেও permanent app certificate provisioning এখনো হয়নি। SSL failure ঠিক করতে `prefer`, `disable`, বা certificate-check bypass ব্যবহার করা যাবে না।
+উপরের secrets placeholders; DB_URL override ব্যবহার হয়নি। Secrets VITE variables-এ নয়।
+Log mailer delivery নয়; warning-level logging-এ mail contents পাওয়া যাবে এমন দাবিও নেই।
+Verification globally bypass/public verification-link endpoint বানানো যাবে না। SMTP/password-reset delivery এবং invitation email আলাদা gate।
 
-পরবর্তী access prerequisite: Supabase connector-এ নির্বাচিত **Team Fahad Org** account যুক্ত করতে হবে, অথবা অনুমোদিত private credential handoff-এর ব্যবস্থা করতে হবে। Browser login থেকে database password পাওয়া যায় না; dashboard-ও বলছে creation-এর পরে password দেখা যায় না। Password reset করা হয়নি—এটি existing connections ভাঙতে পারে এবং credential entry/submission ব্যবহারকারীকে করতে হবে। Password/token chat, screenshots, GitHub বা public directory-তে দেওয়া যাবে না।
+## পরীক্ষার ফল
 
-## Remote database provisioning — এখনো করা হয়নি
+- Locked Composer production dependencies installed; frontend build deployed; config/route/view caches তৈরি।
+- /, /login, /register, /up HTTP 200; browser-এ home/login। /up শুধু Laravel health, business/DB readiness নয়।
+- Live session cookie Secure/HttpOnly/SameSite=Lax; XSRF cookie Secure/SameSite=Lax এবং expected JavaScript-readable। Favicon HTTP 200।
+- /.env, /composer.json, /vendor/autoload.php, /storage/logs/laravel.log, /novaflow-preview/shared/config/app.env HTTP 403; /default.php 404।
+  সব encoded/alternate-route attack পরীক্ষা হয়েছে এমন দাবি নয়।
+- Runtime role দিয়ে transaction-only synthetic user/memberships/two workspaces: lead create/read/update, config publish/stale-version rejection,
+  redacted audit insertion, foreign-tenant read/write denial এবং missing-context fail-closed সফল।
+  Authenticated membership থেকে context; finally clear/rollback এবং tenant-owned test rows না থাকা যাচাই।
+  PostgreSQL sequence values rollback হয় না; gaps expected। এটি CLI/service smoke, browser auth/HTTP permissions/concurrency/load test নয়।
+- Full local gate: Pint, PHPStan zero errors, ৭৯ PHP tests passed / ৩৮৫ assertions, TypeScript, frontend format/lint, ৩ frontend tests ও build।
+  ৮১টি PHP test-এর মধ্যে local PostgreSQL নেই বলে ২ concurrency test skipped; owner/team regressions preserved।
+- Deployed 033e9e9-এর [SQLite/PostgreSQL GitHub CI](https://github.com/umar-vai/CRM/actions/runs/38171796567) দুটো success;
+  PG CI locking tests চালায়। Live Supabase-এ পুরো test suite চালানো হয়নি।
+- Post-migration Supabase security advisors: no findings; complete security audit নয়।
 
-1. শুধু নির্বাচিত project-এর schemas/roles/default grants যাচাই করা এবং প্রয়োজনীয় পরিবর্তন user-কে দেখানো। Existing system schemas বদলানো যাবে না।
-2. CRM-এর জন্য unexposed `novaflow` schema তৈরি করা; এটি Supabase Data API exposed schemas-এ যোগ করা যাবে না।
-3. Separate migration owner এবং restricted runtime login provision করা। Runtime role schema owner, superuser, role creator বা migration role-এর member হবে না; শুধু প্রয়োজনীয় CRM table/sequence privileges পাবে। Password secret manager/private server configuration-এ থাকবে।
-4. `anon`, `authenticated`, `service_role` এবং `PUBLIC`-এর CRM schema/object access নিষিদ্ধ আছে কি না যাচাই করা। Laravel frontend থেকে Supabase Data API ব্যবহার করা হবে না। Exposed schema-তে কখনো business tables যোগ করলে যথাযথ RLS/policies বাধ্যতামূলক।
-5. Private schema হওয়া tenant isolation-এর বিকল্প নয়। বর্তমান isolation Laravel TenantContext, model scopes এবং backend authorization-এর ওপর নির্ভরশীল; database-level tenant RLS এখনো implemented নয়।
-6. Hostinger থেকে TLS connection, `current_schema()`, role privileges এবং SSL session পরীক্ষা করা। Developer laptop-এর সফল connection Hostinger connectivity-এর প্রমাণ নয়।
-7. Migration credentials দিয়ে existing Laravel migrations চালানো; runtime credentials দিয়ে CRUD ও cross-tenant denial smoke tests চালানো। `migrate:fresh`, schema reset বা destructive rollback ব্যবহার করা যাবে না।
+## বাকি acceptance gates
 
-## Hostinger-এ নিরাপদ files ও runtime
+- [x] Private release/public assets/HTTPS pages/restricted DB connection/migrations।
+- [x] Private HTTP deny probes/permissions/parent WordPress unchanged।
+- [x] Two-workspace CLI isolation/stale-config smoke/rollback; migrator login disabled।
+- [ ] SMTP, registration → verification → login → workspace/lead/team browser E2E, password reset, 2FA/passkeys।
+- [ ] CI-success-only automatic deployment; scoped staging secrets ও independently verified SSH host key।
+- [ ] Tested release switch/rollback, database export এবং isolated restore drill। Backup থাকা restore proof নয়।
+- [ ] Credential rotation/observability/abuse controls/mobile/accessibility/load audit; Free-plan inactivity/availability mitigation।
 
-- Selected CRM domain-এ PHP 8.4 ও `pdo_pgsql` web/CLI দুটিতে enable/verify হয়েছে। Parent WordPress PHP version বদলানো হয়নি। Deployment-এর সময় এই prerequisite আবার পরীক্ষা করতে হবে।
-- CRM-এর Manage site parent domain-এর dashboard খুলছে। CRM folder-এর `.htaccess`-এ PHP 8.4 handler আছে; এটি extension/options isolation নিশ্চিত করে না। অনুমোদিত driver setup account-এর PHP 8.2/8.4 extension configuration প্রভাবিত করেছে, অন্য extension বন্ধ করা হয়নি।
-- পুরো Laravel repo `public_html`-এ clone করা যাবে না। `.env`, `vendor`, source, sessions, logs, certificate এবং config cache public web root-এর বাইরে রাখতে হবে।
-- বর্তমান CRM document root একটি আলাদা `public_html/crm` directory। এখানে কেবল Laravel public entrypoint এবং built assets থাকবে; entrypoint private app path ব্যবহার করবে। Private app-এর সুনির্দিষ্ট directory/SSH permissions যাচাইয়ের আগে path অনুমান করে deploy করা যাবে না।
-- প্রয়োজন authenticated SSH/SFTP বা সমমানের verified private-file access; PHP/static upload endpoint দিয়ে public webshell, migration runner বা remote-execution endpoint বানানো যাবে না।
-- Composer production dependencies ও frontend build install করা হবে। Server-এ `artisan serve`, Vite dev server বা public `hot` file থাকবে না। `APP_KEY` প্রতি deployment-এ পরিবর্তন করা যাবে না।
-- App চালাতে Redis বাধ্যতামূলক করে নতুন service কেনা হবে না। Preview-এ database sessions/cache এবং existing queue configuration পরীক্ষা করতে হবে; reliable queue worker setup ছাড়া নতুন async business jobs enable করা যাবে না।
-- SMTP/provider দিয়ে registration verification/password-reset email চালাতে হবে। Log mailer publicly expose করা বা email verification globally bypass করা যাবে না। Invitation email delivery এখনো আলাদা deferred workflow।
+## GitHub update ও recovery plan
 
-## GitHub push থেকে update — প্রয়োজনীয় gate
+এখন শুধু CI; GitHub push নিজে live source বদলায় না। Documentation-only commits-ও deployed release বদলায় না।
+Pipeline: pinned tools/actions → SQLite/PG checks + build → একই tested SHA artifact → serialized scoped staging upload + strict verified host key →
+reviewed migration activation/apply/disable → coordinated assets/release switch/cache → HTTPS/auth/tenant smoke →
+failed release-এ previous artifact restore। Automatic destructive DB rollback নয়। সাধারণ production rollout-এ manual approval থাকবে।
+Existing account-wide SSH key silently GitHub-এ upload নয়; persistent deployment access-এর scope নির্দিষ্টভাবে review করতে হবে।
 
-এখন শুধু CI আছে, deployment workflow নেই। Hostinger Git auto-deploy চালু করলেই CI success-এর জন্য অপেক্ষা করবে ধরে নেওয়া যাবে না।
+Old placeholder backup last-known-good functional CRM নয়; first release-এর আগে functional release ছিল না।
+Public assets copied, symlink নয়; future switch-এ public assets/private current সামঞ্জস্যপূর্ণ রাখা প্রয়োজন।
+Migration.env চালানোর সময় cached runtime credentials accidentally ব্যবহার নয়; reviewed uncached migration configuration লাগবে।
+APP_KEY প্রতি release-এ regenerate নয়। Restore/rollback drill এবং SMTP ছাড়া production readiness দাবি নয়।
 
-পরিকল্পিত pipeline:
+## Primary references
 
-1. Pinned tool/action versions দিয়ে PHP formatting/static analysis, SQLite/PostgreSQL tests, TypeScript/frontend checks এবং build।
-2. পরীক্ষা সফল হলে সেই **একই tested commit** থেকে production artifact তৈরি; secrets/dependencies/test DB export বাদ দেওয়া।
-3. GitHub staging environment-এর scoped secrets এবং verified SSH host key দিয়ে release upload; concurrent deployments serialize করা। `StrictHostKeyChecking=no` নয়।
-4. Backup/rollback readiness যাচাই, pending migration apply, release switch এবং cache refresh।
-5. HTTPS/login/email/lead/tenant isolation smoke test; failure হলে last known-good artifact ফিরিয়ে দেওয়া। Destructive database rollback স্বয়ংক্রিয় নয়।
-6. Commit SHA এবং deployment result রেকর্ড। General production deployment-এ manual approval থাকবে।
+- [Supabase connections/TLS](https://supabase.com/docs/guides/database/connecting-to-postgres)
+- [Supabase API security](https://supabase.com/docs/guides/api/securing-your-api)
+- [PostgreSQL roles](https://www.postgresql.org/docs/17/sql-createrole.html)
+- [Supabase Free-plan constraints/pricing](https://supabase.com/pricing)
+- [Hostinger subdomain PHP](https://www.hostinger.com/support/4047803-how-to-change-the-php-version-for-subfolders-or-subdomains-in-hostinger/)
+- [LiteSpeed PHP worker reload](https://docs.litespeedtech.com/lsws/cp/cpanel/php-user-ini/)
 
-Server runtime, SSH path ও credentials যাচাই না হওয়া পর্যন্ত executable auto-deploy workflow বানিয়ে সফল দাবি করা যাবে না।
-
-## Preview চালু হওয়ার acceptance gate
-
-- [x] CRM domain-এ PHP 8.4+ ও pgsql driver, CLI এবং private file access verified। Private application release এখনো তৈরি হয়নি।
-- [ ] Runtime credentials frontend/logs/repo-তে নেই; `.env`, app source, private certificate এবং logs HTTP দিয়ে পড়া যায় না।
-- [ ] Hostinger -> Supabase verified TLS connection; private schema এবং role grants verified।
-- [ ] Laravel migrations, registration/login, email verification ও password reset verified।
-- [ ] দুটি test workspace দিয়ে unauthorized/cross-tenant access denied।
-- [ ] Owner invitation ও protected-owner regression preserved।
-- [ ] Successful GitHub push updates tested commit; failed tests do not deploy।
-- [ ] Backup/export ও isolated restore drill; rollback demonstrably works।
-- [ ] Preview synthetic data only; Free plan limits/inactivity pause এবং production-readiness limitations documented।
-
-## Verification of this preparation slice
-
-Configuration tests check environment overrides, backward-compatible defaults এবং Laravel PDO DSN-এ certificate/SSL options যাওয়ার আচরণ; remote connection নয়।
-
-এই preparation-এর local completion gate পাস: Pint, PHPStan (zero errors), ৭৯টি PHP test / ৩৮৫ assertions, frontend formatting/lint, TypeScript, ৩টি UI test এবং build। PostgreSQL test server না থাকায় ২টি concurrency test স্থানীয়ভাবে skipped। Implementation commit `1d3beb8`-এর [SQLite ও PostgreSQL GitHub CI jobs](https://github.com/umar-vai/CRM/actions/runs/38168540383) দুটিই success। Remote web/CLI runtime ও password-free TLS verification পাস; authenticated DB/PDO connection, schema/roles, SMTP এবং deployment/rollback পরীক্ষিত নয়।
-
-## Current primary references
-
-- [Supabase connection modes, prepared statements and TLS](https://supabase.com/docs/guides/database/connecting-to-postgres)
-- [Supabase Data API grants, exposed schemas and security](https://supabase.com/docs/guides/api/securing-your-api)
-- [Supabase pricing and Free-plan limitations](https://supabase.com/pricing)
-- [Hostinger subdomain PHP handler এবং extension/CLI limitations](https://www.hostinger.com/support/4047803-how-to-change-the-php-version-for-subfolders-or-subdomains-in-hostinger/)
-- [LiteSpeed user-level detached PHP worker reload](https://docs.litespeedtech.com/lsws/cp/cpanel/php-user-ini/)
-
-Provider settings/prices পরিবর্তন হতে পারে; project creation, paid upgrade বা destructive action-এর আগে current settings ও explicit user authorization যাচাই করতে হবে।
+Provider prices/settings পরিবর্তনশীল; paid upgrade/destructive operation-এর আগে current state ও specific authorization দরকার।
