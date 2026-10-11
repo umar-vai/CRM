@@ -1,5 +1,37 @@
 # Verification reports
 
+## Private preview database/bootstrap — 2026-10-12
+
+The newly connected Team Fahad account reaches the selected project. Read-only SQL
+confirmed PostgreSQL 17.11, no pre-existing NovaFlow roles/schema, and no public tables.
+Data API settings showed only `public` and `graphql_public` exposed; no settings were changed.
+One atomic bootstrap attempt failed on owner-specific default privileges and was verified
+fully rolled back (no roles or schema left). The corrected script explicitly switches to
+the creator role for its default grants, without widening runtime membership.
+
+`ops/postgres/preview-bootstrap.sql` and its transactional privilege probe passed on the
+selected remote PostgreSQL project. Schema belongs to `novaflow_migrator`; runtime has USAGE
+but not CREATE or migration/admin membership; anon/authenticated/service_role lack schema
+access. Both roles lack superuser/create-role/create-db/replication/bypass-RLS privileges.
+Probe explicitly allowed runtime INSERT/SELECT, rejected ungranted UPDATE, CREATE, TRUNCATE
+and function EXECUTE; all temporary objects and rows were rolled back. Private schema had
+zero tables/functions afterwards. Supabase security advisors returned no findings.
+
+With specific user approval, Hostinger's owner-only private directory/configuration and
+backups of existing CRM public files were created. Passwords/APP_KEY were generated there
+and are not printed, committed, or sent as plaintext to the connector. Role provisioning
+received only SCRAM verifiers; administrative Supabase migration history may retain those
+verifiers and must remain inaccessible to runtime/public roles. Initial runtime credential
+validity is 90 days; migration validity one day. Hostinger PDO logins for both restricted
+roles pass with `sslmode=verify-full`, the provider CA and `novaflow` search path.
+
+`pg_stat_ssl` reports false for the pooler-to-PostgreSQL backend hop. This does not replace
+the separate verified client-to-pooler TLS test and is not a claim of end-to-end internal TLS.
+No database-level tenant RLS is implemented. Runtime table grants, Laravel application
+migrations, app publishing, auth/browser E2E, SMTP and release/DB recovery remain outstanding
+at this checkpoint. The full local gate and frontend build passed again (79 PHP tests,
+385 assertions, 3 frontend tests; 2 PostgreSQL-only tests skipped locally).
+
 ## External preview preparation — 2026-10-12
 
 Implementation commit `1d3beb8` adds configurable private PostgreSQL search path and

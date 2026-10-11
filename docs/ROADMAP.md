@@ -41,8 +41,18 @@ homepage still returns HTTP 200 with PHP 8.2.34. The temporary runtime probe was
 Hostinger-to-session-pooler TLS 1.3 certificate/hostname verification passed using Supabase's CA;
 this is not database authentication or a Laravel PDO test. In-app browser runtime-probe access
 remained on Hostinger's automatic browser-check page; browser rollout needs a separate recheck.
-Selected-project connector access/private credentials, remote private schema/roles,
-authenticated DB connectivity, email delivery, migrations and deployment/rollback remain outstanding.
+The selected Team Fahad connector now reaches the correct project. Private `novaflow`
+schema and separate non-admin migration/runtime roles were provisioned and verified on
+PostgreSQL 17.11. The transactional permission probe passed and left no objects/data.
+Supabase security advisors returned no findings. Credentials were generated only in
+Hostinger's private configuration; restricted PDO logins with `verify-full` now succeed.
+Only SCRAM verifiers, not plaintext passwords, were sent to role provisioning.
+Runtime password expires after 90 days; initial migration password after one day.
+PostgreSQL reports the pooler-to-database upstream SSL flag as false; client-to-pooler
+TLS verification is a distinct test, not a claim of TLS on every internal hop.
+Initial private server configuration and public-file backups exist. Laravel migrations,
+final runtime table grants, live application publishing, email delivery, auto-deployment
+and deployment/restore recovery are not yet verified at this preparation checkpoint.
 See [preview runbook](HOSTINGER_PREVIEW_BN.md). This does not change the next CRM feature milestone.
 
 ### Product increments
