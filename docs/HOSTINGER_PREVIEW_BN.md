@@ -16,6 +16,10 @@
 - HTTPS 200 পাওয়া গেছে, কিন্তু response হলো Hostinger-এর **Default page**, NovaFlow নয়।
 - Supabase dashboard-এ project Healthy এবং `public` schema-তে কোনো table দেখা যায়নি। অন্য schemas খালি বলে দাবি করা হয়নি।
 - Browser-এর Supabase account-এ project দেখা যায়; বর্তমানে connected দুই Supabase connector account-এ এই project নেই। কোনো credential/token কপি করা হয়নি।
+- User-approved `novaflow-preview-local` SSH key দিয়ে hosting account login পরীক্ষিত। Private key repo-এর বাইরে স্থানীয় Windows user/System/Administrators permissions-এ সীমাবদ্ধ; key-তে passphrase নেই। GitHub বা অন্য service-এ private key দেওয়া হয়নি। এটি account-wide access, শুধু CRM folder-এ সীমিত credential নয়; স্বয়ংক্রিয় expiry নেই। Access revoke করতে hPanel → SSH Access থেকে এই নামের key সরাতে হবে; তারপর স্থানীয় key-ও নিরাপদে সরাতে হবে।
+- SSH host key প্রথম connection-এ trust-on-first-use করে আলাদা local known-hosts file-এ pin করা হয়েছে; পরের connection-এ strict checking সফল। Provider-এর independent fingerprint verification এখনো করা হয়নি; GitHub deployment trust setup-এ এই সীমাবদ্ধতা বিবেচনা করতে হবে।
+- Explicit CLI binary `/opt/alt/php84/usr/bin/php` দিয়ে PHP 8.4.26 ও Composer 2.9.8 পরীক্ষিত। Default CLI PHP 8.1.34 এবং মূল website PHP 8.2 অপরিবর্তিত। PHP 8.4 CLI-তে `pdo_pgsql` নেই।
+- CRM public directory-তে শুধু Hostinger `default.php` আছে। Public root-এর বাইরে নির্বাচিত private app parent writable; app directory/release এখনো তৈরি হয়নি।
 - App deployment, remote database provisioning/connection, mail delivery এবং automatic deployment এখনো অসম্পন্ন।
 
 ## Database connection: যা প্রস্তুত আছে
@@ -63,6 +67,7 @@ LOG_LEVEL=warning
 ## Hostinger-এ নিরাপদ files ও runtime
 
 - Selected CRM domain-এ PHP 8.4+ এবং `pdo_pgsql` বাস্তবে enable/verify করা দরকার। Parent WordPress site-এর PHP settings বদলানোর অনুমতি নেই। CLI PHP এবং web PHP আলাদাভাবে যাচাই করতে হবে।
+- CRM-এর Manage site parent domain-এর dashboard খুলছে। শুধু CRM folder-এর `.htaccess`-এ PHP 8.4 handler দেওয়া সম্ভব বলে provider documentation জানায়; এটি extension/options isolation নিশ্চিত করে না। Parent PHP version বদলানো যাবে না। `pdo_pgsql` enable করলে shared/account settings প্রভাবিত হতে পারে—সেই নির্দিষ্ট পরিবর্তনের আলাদা অনুমতি ও CLI/web verification প্রয়োজন।
 - পুরো Laravel repo `public_html`-এ clone করা যাবে না। `.env`, `vendor`, source, sessions, logs, certificate এবং config cache public web root-এর বাইরে রাখতে হবে।
 - বর্তমান CRM document root একটি আলাদা `public_html/crm` directory। এখানে কেবল Laravel public entrypoint এবং built assets থাকবে; entrypoint private app path ব্যবহার করবে। Private app-এর সুনির্দিষ্ট directory/SSH permissions যাচাইয়ের আগে path অনুমান করে deploy করা যাবে না।
 - প্রয়োজন authenticated SSH/SFTP বা সমমানের verified private-file access; PHP/static upload endpoint দিয়ে public webshell, migration runner বা remote-execution endpoint বানানো যাবে না।
@@ -101,12 +106,13 @@ Server runtime, SSH path ও credentials যাচাই না হওয়া প
 
 Configuration tests check environment overrides, backward-compatible defaults এবং Laravel PDO DSN-এ certificate/SSL options যাওয়ার আচরণ; remote connection নয়।
 
-এই preparation-এর local completion gate পাস: Pint, PHPStan (zero errors), ৭৯টি PHP test / ৩৮৫ assertions, frontend formatting/lint, TypeScript, ৩টি UI test এবং build। PostgreSQL test server না থাকায় ২টি concurrency test স্থানীয়ভাবে skipped। এই increment-এর GitHub CI result এখনো যাচাই করা হয়নি। Remote schema/roles, certificate/TLS connection, SMTP এবং deployment/rollback পরীক্ষিত নয়।
+এই preparation-এর local completion gate পাস: Pint, PHPStan (zero errors), ৭৯টি PHP test / ৩৮৫ assertions, frontend formatting/lint, TypeScript, ৩টি UI test এবং build। PostgreSQL test server না থাকায় ২টি concurrency test স্থানীয়ভাবে skipped। Implementation commit `1d3beb8`-এর [SQLite ও PostgreSQL GitHub CI jobs](https://github.com/umar-vai/CRM/actions/runs/38168540383) দুটিই success। Remote schema/roles, certificate/TLS connection, SMTP এবং deployment/rollback পরীক্ষিত নয়।
 
 ## Current primary references
 
 - [Supabase connection modes, prepared statements and TLS](https://supabase.com/docs/guides/database/connecting-to-postgres)
 - [Supabase Data API grants, exposed schemas and security](https://supabase.com/docs/guides/api/securing-your-api)
 - [Supabase pricing and Free-plan limitations](https://supabase.com/pricing)
+- [Hostinger subdomain PHP handler এবং extension/CLI limitations](https://www.hostinger.com/support/4047803-how-to-change-the-php-version-for-subfolders-or-subdomains-in-hostinger/)
 
 Provider settings/prices পরিবর্তন হতে পারে; project creation, paid upgrade বা destructive action-এর আগে current settings ও explicit user authorization যাচাই করতে হবে।

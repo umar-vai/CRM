@@ -31,8 +31,12 @@ tests are added. Local completion gate passed: Pint, PHPStan (zero errors),
 79 PHP tests with 385 assertions, frontend formatting/lint, TypeScript, 3 UI tests and build.
 Two PostgreSQL concurrency tests were skipped locally because no PostgreSQL test server
 is available. Configuration tests do not prove remote TLS, role grants or connectivity.
-This increment's GitHub CI result is not yet verified.
-Remote private schema/roles, Hostinger PHP/SSH access, verified TLS DB connectivity,
+Both SQLite and PostgreSQL GitHub CI jobs passed for implementation commit `1d3beb8`:
+[preview configuration CI](https://github.com/umar-vai/CRM/actions/runs/38168540383).
+User-approved local SSH key access is established; the private application parent is writable.
+PHP 8.4 is available through an explicit CLI binary, but its PostgreSQL driver is absent.
+The default CLI is PHP 8.1 and the parent website remains PHP 8.2; neither was changed.
+Remote private schema/roles, CRM web PHP/driver setup, verified TLS DB connectivity,
 email delivery, migrations and deployment/rollback remain outstanding.
 See [preview runbook](HOSTINGER_PREVIEW_BN.md). This does not change the next CRM feature milestone.
 

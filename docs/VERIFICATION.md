@@ -1,5 +1,25 @@
 # Verification reports
 
+## External preview preparation — 2026-10-12
+
+Implementation commit `1d3beb8` adds configurable private PostgreSQL search path and
+CA certificate options, with two isolated configuration tests (9 assertions).
+Local gate passed: Pint, PHPStan (zero errors), 79 PHP tests / 385 assertions,
+frontend formatting/lint, TypeScript, 3 UI tests and frontend build.
+Two PostgreSQL concurrency tests were skipped locally. Both GitHub database jobs
+completed successfully: [configuration CI](https://github.com/umar-vai/CRM/actions/runs/38168540383).
+
+Hostinger hPanel shows the user-approved SSH key; authenticated, read-only SSH checks
+confirm the CRM document root, writable private parent, explicit PHP 8.4.26 binary
+and Composer 2.9.8. Default CLI PHP is 8.1.34; parent website PHP is 8.2, unchanged.
+The PHP 8.4 CLI module list lacks `pdo_pgsql`. The CRM web root still contains only
+the default hosting page. No application files or database changes were deployed.
+SSH server identity was pinned using trust-on-first-use, not independently verified.
+
+Not verified: CRM web PHP 8.4/driver setup, remote PostgreSQL TLS/authentication,
+schema/role permissions, SMTP, live app flows, auto-deployment or release/DB recovery.
+The read-only hosting checks and documentation update do not change application code.
+
 ## Team-management increment — 2026-10-11
 
 Passed locally on Windows (PHP 8.4, Node 26):
