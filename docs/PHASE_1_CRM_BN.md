@@ -50,7 +50,9 @@ Local full gate passed: ৯৬ PHP tests / ৫৮৩ assertions; Pint; PHPStan z
 TypeScript; frontend formatting/lint; ৪ frontend tests; production build।
 মোট ১০১ PHP tests-এর ৫ PostgreSQL-only local environment-এ skipped। তিনটি নতুন lock test
 দুই independent connection দিয়ে conversion retry, stale edit ও duplicate contact race পরীক্ষা করে;
-PostgreSQL CI result আলাদাভাবে verify করতে হবে।
+Implementation commit `b26239dab0d4af4341fd850f235e4bd0afd2b9b1`-এর
+[GitHub CI](https://github.com/umar-vai/CRM/actions/runs/38176962975)-তে SQLite ও
+PostgreSQL দুই job success; নতুন CRM ও আগের team lock tests PG job-এ covered।
 Schema test isolated database-এ down/up existing lead রাখে; কিন্তু down নতুন customer/activity
 tables মুছে দেয়। Live rollback-এর জন্য পুরোনো code restore ও additive schema রেখে দিন;
 data-destroying migrate:rollback/fresh নয়। Backup restore drill এখনো সম্পন্ন নয়।
@@ -69,6 +71,8 @@ coordinated public assets/private release switch → HTTPS এবং authenticat
 Runtime/migrator permissions, SMTP, অন্য websites ও existing business rows preserve করতে হবে।
 Temporary migration LOGIN শেষে NOLOGIN; APP_KEY/DB runtime secrets regenerate নয়।
 GitHub push এখনো নিজে auto-deploy নয়।
+Current server source `033e9e9`; নতুন rollout-এর specific confirmation চাওয়া হয়েছে,
+উত্তর না পাওয়া পর্যন্ত নতুন migration/grants/live files পরিবর্তন হয়নি।
 
 Rollout verification-এর পরে পরবর্তী development block: industry package manifest/versioning,
 module dependency/entitlement validation এবং typed custom-field schema/preview/rollback।

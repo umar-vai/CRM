@@ -19,7 +19,7 @@ See [verification report](VERIFICATION.md). Foundation PostgreSQL/SQLite CI pass
 This is a scoped team-management increment, **not all of M1**. Ownership transfer and automatic
 invitation email delivery are deferred. See [Bengali phase report](PHASE_1_TEAM_BN.md).
 
-## M1 CRM workflow block — implemented, local gate passed; rollout pending
+## M1 CRM workflow block — implemented, local and CI gates passed; rollout pending
 
 - Lead detail and partial contact/status edits with required optimistic version.
 - Paginated note/call/meeting and system activity timeline; retry-safe activity UUIDs.
@@ -32,7 +32,10 @@ invitation email delivery are deferred. See [Bengali phase report](PHASE_1_TEAM_
 - Customer list/search/pagination; Bengali/English labels and timezone-formatted timeline.
 - Local full gate: 96 PHP tests / 583 assertions, 4 frontend tests, Pint, PHPStan,
   TypeScript, frontend checks and build. Five PostgreSQL-only tests skipped locally;
-  three new independent-connection lock tests must pass PostgreSQL CI before rollout.
+  three new independent-connection lock tests are covered by the successful PostgreSQL CI job.
+
+Implementation commit `b26239dab0d4af4341fd850f235e4bd0afd2b9b1`:
+[SQLite/PostgreSQL CI](https://github.com/umar-vai/CRM/actions/runs/38176962975) both succeeded.
 
 The new Laravel migration/operator grants are prepared, not applied to live Supabase.
 Live app is still source `033e9e9` until a separately verified rollout. See

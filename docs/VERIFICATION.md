@@ -6,7 +6,10 @@ New detail/edit/activity/conversion/customer-list increment: local gate passed w
 96 PHP tests, 583 assertions, 4 frontend tests, Pint, PHPStan zero errors, TypeScript,
 frontend format/lint and build. Five PostgreSQL-only tests skipped locally; three new
 tests use independent connections and bounded lock timeout for conversion retry,
-stale edit and different-lead/same-contact conversion contention. CI evidence pending.
+stale edit and different-lead/same-contact conversion contention.
+Implementation `b26239dab0d4af4341fd850f235e4bd0afd2b9b1`:
+[CI run](https://github.com/umar-vai/CRM/actions/runs/38176962975) completed successfully
+for both SQLite and PostgreSQL jobs, including the existing team and new CRM lock tests.
 Feature coverage includes foreign tenant denial, role checks/current-role recheck,
 no-context failure, optimistic versions, UUID replay/conflicting intent, duplicate
 suggestions/customer review, source snapshots and transactional audit rollback.
