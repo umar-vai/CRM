@@ -88,7 +88,9 @@ using existing Hostinger PHP hosting plus external Supabase PostgreSQL. It is no
 stack replacement or a production-readiness claim. Private app/releases/configuration
 are outside public_html; only the entrypoint and built assets are public. Runtime
 credentials have named-table privileges and the migration role is NOLOGIN after setup.
-SMTP, authenticated browser E2E, automatic deployment and recovery drills remain gates.
+Hostinger SMTPS is configured; a synthetic self-addressed message reached the mailbox
+Inbox with SPF/DKIM/DMARC pass headers. External verification/reset delivery,
+authenticated browser E2E, automatic deployment and recovery drills remain gates.
 `DB_SEARCH_PATH` supports an unexposed private application
 schema; `DB_SSLROOTCERT` supports CA verification with `DB_SSLMODE=verify-full`.
 These settings do not provision a schema, enforce role privileges, or implement tenant RLS.

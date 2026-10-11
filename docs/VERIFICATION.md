@@ -1,6 +1,43 @@
 # Verification reports
 
-## Hostinger mailbox provisioning — 2026-10-12
+## Approved mail DNS + live SMTP integration — 2026-10-12
+
+This supersedes the earlier mailbox-only checkpoint below. Specific approval covered
+seven Cloudflare mail records, private SMTP integration and one synthetic test sent
+only to `noreply@abdullahfahad.com`; no new purchase or personal-email recipient.
+
+- Fresh Cloudflare UI confirmed 15 records: the eight existing website/CRM/Resend auth
+  records plus two MX, one SPF, three DNS-only DKIM CNAMEs and monitoring DMARC.
+  Public resolver 1.1.1.1 returned MX/SPF/DKIM answers; DMARC appeared after initial
+  negative caching. This is not a claim of propagation to every resolver.
+  hPanel status refresh showed all four mail DNS categories with green checks.
+- Private env backup 0600; atomic MAIL-only update compared parsed before/after
+  non-mail values. DB configuration and APP_KEY unchanged. Laravel config cache
+  rebuilt; cached SMTP host/scheme/port/from and credential-match booleans verified.
+- Live Laravel SMTP accepted one synthetic message at 2026-10-11 21:04:52 UTC.
+  Read-only EXAMINE/UID search over certificate-verified IMAP found the exact
+  synthetic subject in Inbox at 21:05:56 UTC. Only relevant headers were fetched:
+  DKIM signature present; SPF, DKIM and DMARC pass markers present.
+- No verification URL, business data, persistent test account, real user's address,
+  new API token or verification bypass was used. Test did not exercise external
+  Gmail/Outlook delivery, password reset or authenticated tenant browser E2E.
+
+Post-change HTTPS home/login/register/up returned 200; env/mail credential/backup
+HTTP probes returned 403. Parent WordPress remains 200/PHP 8.2.34. /up is framework
+health, not database/business readiness.
+Private credential/config/backup/receipts checked 0600 outside public_html. Temporary
+configuration and IMAP CLI helpers removed; no public helper endpoint was created.
+Deployed source remains `033e9e929dd3309603276fee11d0486bf4b37b78`; this mail config
+change and documentation push do not establish GitHub auto-deployment.
+See [email setup report](EMAIL_SETUP_BN.md).
+
+Post-change local gate passed: Pint; PHPStan zero errors; 79 PHP tests passed,
+385 assertions (81 total, 2 PostgreSQL-only skipped locally); TypeScript;
+frontend format/lint; 3 frontend tests; production build. No DB locking/schema
+changes in this phase. The deployed implementation's PostgreSQL CI evidence remains
+the separately linked run below; live Supabase was not used for destructive tests.
+
+## Hostinger mailbox provisioning — earlier checkpoint, 2026-10-12
 
 Specific user-approved mailbox creation succeeded on the existing free email order;
 list call and hPanel both show `noreply@abdullahfahad.com` Active with SMTP enabled.

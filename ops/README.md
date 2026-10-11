@@ -43,4 +43,6 @@ migration runner, phpinfo page, command endpoint, dev server or `hot` file.
 
 The initial deployment is an operator procedure, not GitHub auto-deployment.
 Do not advertise a public login page as verified email delivery or completed
-tenant E2E. The staging log mailer does not deliver messages; SMTP remains a gate.
+tenant E2E. The initial log mailer has been replaced with private Hostinger SMTPS;
+a synthetic self-addressed message reached its Inbox. External verification/reset
+delivery and authenticated browser E2E remain gates. See `docs/EMAIL_SETUP_BN.md`.

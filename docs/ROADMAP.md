@@ -46,16 +46,21 @@ returned no findings, not complete security certification.
 Remaining gates: SMTP verification/reset delivery; authenticated workspace/lead/team
 browser E2E; scoped CI-gated automatic deployment/independent SSH host verification;
 release rollback/isolated DB restore; rotation before runtime expiry
-2027-01-09 20:17:15 UTC. Log mailer is not delivery; no verification bypass/default
+2027-01-09 20:17:15 UTC. No verification bypass/default
 account was added. No automatic updates yet.
 See [runbook](HOSTINGER_PREVIEW_BN.md) and [verification](VERIFICATION.md).
 This infrastructure milestone does not change the next CRM product increment.
 
 Email setup slice: user-approved `noreply@abdullahfahad.com` mailbox created on the
 existing Hostinger free email order; Active and authenticated SMTPS from Hostinger.
-No message sent, no app SMTP switch yet. Cloudflare mail DNS additions and private
-app integration need specific approval; existing website/Resend auth records preserved.
-See [email report](EMAIL_SETUP_BN.md). SMTP auth is not verified inbox delivery.
+The specifically approved seven Cloudflare mail records are added; existing website/CRM/
+Resend auth records preserved. Private backed-up MAIL-only configuration now uses SMTPS;
+config cache refreshed without changing DB/APP_KEY. A single synthetic self-addressed
+message was accepted by Laravel's live SMTP transport and found through read-only IMAP
+in the approved mailbox Inbox, with SPF/DKIM/DMARC pass headers. No real account or
+verification bypass added. External provider delivery, registration/reset browser E2E,
+automatic invitation mail and automatic deployment remain separate gates.
+See [email report](EMAIL_SETUP_BN.md); self-delivery is not general deliverability proof.
 
 ### Product increments
 

@@ -5,12 +5,13 @@
 [অনলাইন NovaFlow](https://crm.abdullahfahad.com) এখন আসল Laravel/Inertia app; Hostinger default page নয়।
 Deployed source: `033e9e929dd3309603276fee11d0486bf4b37b78`। এটি প্রথম operator deployment, **GitHub auto-deployment নয়**।
 Home, login, registration ও Laravel health page HTTP 200; browser-এ home/login render হয়েছে।
-SMTP configured নয়: account খুললেও verification email পৌঁছাবে না; verified workspace browser flow এখনো acceptance gate পাস করেনি।
+Hostinger SMTP configured; একটি synthetic self-addressed test email Inbox-এ পাওয়া গেছে এবং SPF/DKIM/DMARC pass headers আছে।
+External email provider-এ verification/password-reset delivery ও verified workspace browser flow এখনো acceptance gate পাস করেনি।
 কোনো public default account/password বানানো হয়নি। এটি synthetic preview, production-ready ERP নয়; বাস্তব customer/financial data ব্যবহার করবেন না।
 
 ## ব্যবস্থা ও private files
 
-- Cloudflare CNAME `crm.abdullahfahad.com.cdn.hstgr.net`, DNS only; অন্য records অপরিবর্তিত।
+- Cloudflare CNAME `crm.abdullahfahad.com.cdn.hstgr.net`, DNS only; অনুমোদিত ৭টি mail record যোগ হয়েছে, পুরোনো website/CRM/`auth` records অপরিবর্তিত।
 - Existing Hostinger Business account `u148519723`; নতুন VPS/service কেনা হয়নি।
 - Supabase `zmmpipwcxullyzdbecpl`, Team Fahad Org, Mumbai, PostgreSQL 17.11। নতুন connected Team Fahad account ব্যবহার হয়েছে; অন্য accounts নয়।
 - Supabase শুধু PostgreSQL; Laravel auth, verification, TenantContext ও backend permissions অপরিবর্তিত।
@@ -87,12 +88,21 @@ SESSION_ENCRYPT=true
 SESSION_SECURE_COOKIE=true
 CACHE_STORE=database
 QUEUE_CONNECTION=sync
-MAIL_MAILER=log
+MAIL_MAILER=smtp
+MAIL_SCHEME=smtps
+MAIL_HOST=smtp.hostinger.com
+MAIL_PORT=465
+MAIL_USERNAME=noreply@abdullahfahad.com
+MAIL_PASSWORD=<private-mailbox-secret>
+MAIL_FROM_ADDRESS=noreply@abdullahfahad.com
+MAIL_FROM_NAME=NovaFlow
+MAIL_EHLO_DOMAIN=crm.abdullahfahad.com
 LOG_LEVEL=warning
 ```
 
 উপরের secrets placeholders; DB_URL override ব্যবহার হয়নি। Secrets VITE variables-এ নয়।
-Log mailer delivery নয়; warning-level logging-এ mail contents পাওয়া যাবে এমন দাবিও নেই।
+MAIL-only atomic update-এর আগে private `shared/config/app.env.before-smtp-20261012` backup নেওয়া হয়েছে; non-mail settings অপরিবর্তিত যাচাই হয়েছে।
+Config cache refreshed; password/cache/backup public নয়। SMTP Inbox receipt-এর সীমিত প্রমাণ [email report](EMAIL_SETUP_BN.md)-এ আছে।
 Verification globally bypass/public verification-link endpoint বানানো যাবে না। SMTP/password-reset delivery এবং invitation email আলাদা gate।
 
 ## পরীক্ষার ফল
@@ -117,7 +127,8 @@ Verification globally bypass/public verification-link endpoint বানান�
 - [x] Private release/public assets/HTTPS pages/restricted DB connection/migrations।
 - [x] Private HTTP deny probes/permissions/parent WordPress unchanged।
 - [x] Two-workspace CLI isolation/stale-config smoke/rollback; migrator login disabled।
-- [ ] SMTP, registration → verification → login → workspace/lead/team browser E2E, password reset, 2FA/passkeys।
+- [x] Approved mail DNS/private SMTPS configuration; একবার synthetic self-send ও read-only Inbox/header confirmation।
+- [ ] External verification/reset email delivery; registration → verification → login → workspace/lead/team browser E2E, password reset, 2FA/passkeys।
 - [ ] CI-success-only automatic deployment; scoped staging secrets ও independently verified SSH host key।
 - [ ] Tested release switch/rollback, database export এবং isolated restore drill। Backup থাকা restore proof নয়।
 - [ ] Credential rotation/observability/abuse controls/mobile/accessibility/load audit; Free-plan inactivity/availability mitigation।
@@ -133,7 +144,7 @@ Existing account-wide SSH key silently GitHub-এ upload নয়; persistent depl
 Old placeholder backup last-known-good functional CRM নয়; first release-এর আগে functional release ছিল না।
 Public assets copied, symlink নয়; future switch-এ public assets/private current সামঞ্জস্যপূর্ণ রাখা প্রয়োজন।
 Migration.env চালানোর সময় cached runtime credentials accidentally ব্যবহার নয়; reviewed uncached migration configuration লাগবে।
-APP_KEY প্রতি release-এ regenerate নয়। Restore/rollback drill এবং SMTP ছাড়া production readiness দাবি নয়।
+APP_KEY প্রতি release-এ regenerate নয়। Restore/rollback drill এবং external auth email/browser acceptance ছাড়া production readiness দাবি নয়।
 
 ## Primary references
 

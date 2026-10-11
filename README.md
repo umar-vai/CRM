@@ -4,7 +4,8 @@ BizNova-inspired **original implementation**, not a copy of proprietary source c
 Current milestone: a working multi-workspace CRM foundation with owner-managed teams. **Not production-ready ERP.**
 
 Online foundation preview: [crm.abdullahfahad.com](https://crm.abdullahfahad.com).
-First Hostinger/Supabase operator release is live; SMTP and GitHub auto-deployment are not configured.
+First Hostinger/Supabase operator release is live. Hostinger SMTP is configured and one synthetic
+self-addressed message reached its Inbox with SPF/DKIM/DMARC pass headers. GitHub auto-deployment is not configured.
 Public pages render, but registration email verification/password-reset delivery and authenticated
 browser E2E remain unverified. Use synthetic data only. See the [deployment runbook](docs/HOSTINGER_PREVIEW_BN.md).
 
@@ -65,7 +66,7 @@ npm run build
 - [Milestones and current status](docs/ROADMAP.md)
 - [Phase 1 team-management report and Bengali usage guide](docs/PHASE_1_TEAM_BN.md)
 - [Hostinger + external PostgreSQL preview runbook](docs/HOSTINGER_PREVIEW_BN.md): actual deployed SHA, private server layout, runtime privilege checks and remaining email/automation/recovery gates.
-- [Email setup report](docs/EMAIL_SETUP_BN.md): approved mailbox and SMTP-auth checks; DNS/app integration and actual delivery still pending.
+- [Email setup report](docs/EMAIL_SETUP_BN.md): approved mail DNS, private SMTP integration and synthetic Inbox receipt; external verification/reset delivery still unverified.
 - [GPT continuation instructions](AGENTS.md)
 
 The blueprint describes the target product, **not a claim that every feature exists**.
