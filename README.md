@@ -65,6 +65,7 @@ npm run build
 - [Milestones and current status](docs/ROADMAP.md)
 - [Phase 1 team-management report and Bengali usage guide](docs/PHASE_1_TEAM_BN.md)
 - [Hostinger + external PostgreSQL preview runbook](docs/HOSTINGER_PREVIEW_BN.md): actual deployed SHA, private server layout, runtime privilege checks and remaining email/automation/recovery gates.
+- [Email setup report](docs/EMAIL_SETUP_BN.md): approved mailbox and SMTP-auth checks; DNS/app integration and actual delivery still pending.
 - [GPT continuation instructions](AGENTS.md)
 
 The blueprint describes the target product, **not a claim that every feature exists**.

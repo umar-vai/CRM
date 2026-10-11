@@ -1,5 +1,23 @@
 # Verification reports
 
+## Hostinger mailbox provisioning — 2026-10-12
+
+Specific user-approved mailbox creation succeeded on the existing free email order;
+list call and hPanel both show `noreply@abdullahfahad.com` Active with SMTP enabled.
+First create was rejected by provider password validation; unused staging secret was
+corrected to documented length, not a password reset of an existing mailbox.
+Private server-staged credential is not in Git or public files. Hostinger Symfony
+SMTPS authentication with certificate validation succeeded; no message was sent.
+Cloudflare zone read showed eight existing records, no root MX/SPF/DMARC; no DNS
+mutation or app mailer switch. Live application remains log transport. Provider
+DNS/integration approval and actual verification/reset delivery remain gates.
+See [email setup report](EMAIL_SETUP_BN.md); do not infer delivery from SMTP auth.
+
+Post-change local gate passed again: Pint, PHPStan zero errors, 79 PHP tests passed /
+385 assertions (2 PostgreSQL-only skipped, 81 total), TypeScript, frontend format/lint,
+3 frontend tests and production build. git diff --check passed. Temporary server
+credential-generation/auth-check scripts removed; active mailbox secret retained 0600.
+
 ## Initial live Hostinger/Supabase preview — 2026-10-12
 
 Deployed source `033e9e929dd3309603276fee11d0486bf4b37b78` at

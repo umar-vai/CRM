@@ -51,6 +51,12 @@ account was added. No automatic updates yet.
 See [runbook](HOSTINGER_PREVIEW_BN.md) and [verification](VERIFICATION.md).
 This infrastructure milestone does not change the next CRM product increment.
 
+Email setup slice: user-approved `noreply@abdullahfahad.com` mailbox created on the
+existing Hostinger free email order; Active and authenticated SMTPS from Hostinger.
+No message sent, no app SMTP switch yet. Cloudflare mail DNS additions and private
+app integration need specific approval; existing website/Resend auth records preserved.
+See [email report](EMAIL_SETUP_BN.md). SMTP auth is not verified inbox delivery.
+
 ### Product increments
 
 1. CRM detail/edit, activity timeline, customer conversion and duplicate handling, with tenant/permission/transaction tests.
