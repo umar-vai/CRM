@@ -12,13 +12,35 @@ completed successfully: [configuration CI](https://github.com/umar-vai/CRM/actio
 Hostinger hPanel shows the user-approved SSH key; authenticated, read-only SSH checks
 confirm the CRM document root, writable private parent, explicit PHP 8.4.26 binary
 and Composer 2.9.8. Default CLI PHP is 8.1.34; parent website PHP is 8.2, unchanged.
-The PHP 8.4 CLI module list lacks `pdo_pgsql`. The CRM web root still contains only
-the default hosting page. No application files or database changes were deployed.
+The approved CRM-only `.htaccess` handler serves PHP 8.4.26. Hostinger's extension operation
+enabled only `pdo_pgsql` for PHP 8.2; a backed-up user-owned PHP 8.4 INI then received only
+the same driver entry. After a user-level LiteSpeed PHP worker reload, web HTTPS and explicit
+CLI probes both confirmed PHP 8.4.26 with `pdo_pgsql`, `mbstring` and `openssl` loaded.
+The original PHP 8.4 INI backup is outside the web root; future provider updates may replace
+this user-owned configuration, so the module check is a deployment prerequisite.
+The temporary fixed-output PHP probe was removed and returns HTTP 404. The parent homepage
+still returns HTTP 200 with PHP 8.2.34 and WordPress markup. CRM still serves Hostinger's default
+page, not NovaFlow. No application release or database changes were deployed.
 SSH server identity was pinned using trust-on-first-use, not independently verified.
 
-Not verified: CRM web PHP 8.4/driver setup, remote PostgreSQL TLS/authentication,
-schema/role permissions, SMTP, live app flows, auto-deployment or release/DB recovery.
-The read-only hosting checks and documentation update do not change application code.
+Hostinger's OpenSSL client reached the dashboard-verified Supabase session pooler and completed
+TLS 1.3 with certificate and hostname verification OK using the dashboard-linked Supabase CA.
+The CA was downloaded into a task-specific temporary directory, then removed with that directory.
+The OS default CA bundle alone rejected the provider-specific chain; verification was never disabled.
+No password was submitted and no SQL query ran. This is a TLS transport test, not authenticated
+PostgreSQL/PDO connectivity. The selected Team Fahad Org project remains unavailable through
+the currently connected Supabase accounts. No password reset was attempted.
+The in-app browser remained on Hostinger's automatic browser-check page for the runtime probe;
+that screenshot is not runtime proof. HTTPS probe results and the hPanel enabled-driver view
+provide separate evidence; end-user browser access still needs testing at app rollout.
+
+Not verified: authenticated remote PostgreSQL/PDO connection, schema/role permissions,
+permanent private application/CA configuration, SMTP, live app flows, auto-deployment or
+release/DB recovery. Runtime setup and this documentation update do not change application code.
+After the runtime documentation update, the full local `composer ci:check` gate and
+frontend production build were rerun successfully: Pint, PHPStan (zero errors), 79 PHP tests
+/ 385 assertions, TypeScript, frontend formatting/lint and 3 frontend tests. The same two
+PostgreSQL-only tests were skipped locally; no new remote database test is implied.
 
 ## Team-management increment — 2026-10-11
 

@@ -34,10 +34,15 @@ is available. Configuration tests do not prove remote TLS, role grants or connec
 Both SQLite and PostgreSQL GitHub CI jobs passed for implementation commit `1d3beb8`:
 [preview configuration CI](https://github.com/umar-vai/CRM/actions/runs/38168540383).
 User-approved local SSH key access is established; the private application parent is writable.
-PHP 8.4 is available through an explicit CLI binary, but its PostgreSQL driver is absent.
-The default CLI is PHP 8.1 and the parent website remains PHP 8.2; neither was changed.
-Remote private schema/roles, CRM web PHP/driver setup, verified TLS DB connectivity,
-email delivery, migrations and deployment/rollback remain outstanding.
+CRM-only PHP handler and the hosting user's PHP 8.4 extension configuration are set up;
+web and explicit CLI PHP 8.4.26 both load `pdo_pgsql`. Only the approved driver was enabled;
+other extensions/options were preserved. Default CLI remains PHP 8.1; the parent WordPress
+homepage still returns HTTP 200 with PHP 8.2.34. The temporary runtime probe was removed (404).
+Hostinger-to-session-pooler TLS 1.3 certificate/hostname verification passed using Supabase's CA;
+this is not database authentication or a Laravel PDO test. In-app browser runtime-probe access
+remained on Hostinger's automatic browser-check page; browser rollout needs a separate recheck.
+Selected-project connector access/private credentials, remote private schema/roles,
+authenticated DB connectivity, email delivery, migrations and deployment/rollback remain outstanding.
 See [preview runbook](HOSTINGER_PREVIEW_BN.md). This does not change the next CRM feature milestone.
 
 ### Product increments

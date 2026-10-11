@@ -18,8 +18,12 @@
 - Browser-এর Supabase account-এ project দেখা যায়; বর্তমানে connected দুই Supabase connector account-এ এই project নেই। কোনো credential/token কপি করা হয়নি।
 - User-approved `novaflow-preview-local` SSH key দিয়ে hosting account login পরীক্ষিত। Private key repo-এর বাইরে স্থানীয় Windows user/System/Administrators permissions-এ সীমাবদ্ধ; key-তে passphrase নেই। GitHub বা অন্য service-এ private key দেওয়া হয়নি। এটি account-wide access, শুধু CRM folder-এ সীমিত credential নয়; স্বয়ংক্রিয় expiry নেই। Access revoke করতে hPanel → SSH Access থেকে এই নামের key সরাতে হবে; তারপর স্থানীয় key-ও নিরাপদে সরাতে হবে।
 - SSH host key প্রথম connection-এ trust-on-first-use করে আলাদা local known-hosts file-এ pin করা হয়েছে; পরের connection-এ strict checking সফল। Provider-এর independent fingerprint verification এখনো করা হয়নি; GitHub deployment trust setup-এ এই সীমাবদ্ধতা বিবেচনা করতে হবে।
-- Explicit CLI binary `/opt/alt/php84/usr/bin/php` দিয়ে PHP 8.4.26 ও Composer 2.9.8 পরীক্ষিত। Default CLI PHP 8.1.34 এবং মূল website PHP 8.2 অপরিবর্তিত। PHP 8.4 CLI-তে `pdo_pgsql` নেই।
-- CRM public directory-তে শুধু Hostinger `default.php` আছে। Public root-এর বাইরে নির্বাচিত private app parent writable; app directory/release এখনো তৈরি হয়নি।
+- Explicit CLI binary `/opt/alt/php84/usr/bin/php` দিয়ে PHP 8.4.26 ও Composer 2.9.8 পরীক্ষিত। CRM-এর নিজস্ব `.htaccess` handler দিয়ে HTTPS web runtime-ও PHP 8.4.26। Web ও CLI দুটিতেই `pdo_pgsql`, `mbstring`, `openssl` loaded যাচাই করা হয়েছে। Default CLI PHP 8.1.34 অপরিবর্তিত; পরিবর্তনের পরে মূল WordPress homepage HTTP 200 এবং PHP 8.2.34 পাওয়া গেছে।
+- অনুমোদিত hPanel extension পরিবর্তনে শুধু `pdo_pgsql` চালু হয়েছে; parent PHP version এবং options বদলানো হয়নি। এটি PHP 8.2-তে কার্যকর হলেও PHP 8.4-তে হয়নি। তাই hosting user-owned `/etc/cl.php.d/alt-php84/alt_php.ini`-এর backup নিয়ে শুধু `extension=pdo_pgsql.so` entry যোগ করা হয়েছে। এটি account-এর PHP 8.4 configuration, শুধু CRM-isolated extension setting নয়। অন্য PHP 8.4 site থাকলে ওই driver সেখানেও available হবে। User-level LiteSpeed worker reload-এর পরে CRM HTTPS probe-তে driver loaded পাওয়া গেছে।
+- Runtime backup: `/home/u148519723/.novaflow-runtime-backups/php84-before-pgsql-20261012.ini`। Original SHA-256: `397eccc42e0025d1fe03ea3695516c6c7565e200b1f60190d2cf5117a05b4996`। ভবিষ্যৎ hPanel/PHP configuration update এই user-owned file বদলাতে পারে; update-এর পরে web/CLI driver পুনরায় যাচাই করতে হবে। Restore-এর আগে পরবর্তী অন্য পরিবর্তন আছে কি না diff দেখতে হবে; পুরো পুরোনো file অন্ধভাবে overwrite নয়।
+- CRM public directory-তে Hostinger `default.php` ও PHP handler `.htaccess` আছে। Temporary fixed-output probe সরানো হয়েছে এবং HTTPS 404 যাচাই হয়েছে; local ignored copy আছে। কোনো `phpinfo()`, environment dump বা public command runner রাখা হয়নি। Public root-এর বাইরে নির্বাচিত private app parent writable; app directory/release এখনো তৈরি হয়নি।
+- Hostinger থেকে dashboard-verified session pooler-এ TLS 1.3 handshake সফল; Supabase-এর dashboard-linked CA দিয়ে certificate ও hostname verification `OK`। পরীক্ষার temporary CA file-ও সরানো হয়েছে। Password/database authentication, Laravel PDO connection এবং SQL query এই পরীক্ষার অংশ নয়।
+- In-app browser-এ temporary probe খুলতে Hostinger-এর automatic browser-check page আটকে ছিল; তার screenshot-কে runtime proof বলা হয়নি। Runtime result HTTPS request দিয়ে যাচাই হয়েছে; hPanel screenshot-এ `pdo_pgsql` enabled দেখা গেছে। Preview browser access-এর এই বাধাও application rollout-এর আগে আবার পরীক্ষা করতে হবে।
 - App deployment, remote database provisioning/connection, mail delivery এবং automatic deployment এখনো অসম্পন্ন।
 
 ## Database connection: যা প্রস্তুত আছে
@@ -27,7 +31,7 @@
 `config/database.php` এখন `DB_SEARCH_PATH` এবং `DB_SSLROOTCERT` নেয়। স্থানীয় default যথাক্রমে `public` এবং certificate unset; SQLite test setup অপরিবর্তিত।
 
 Shared-hosting IPv4 connection-এর প্রথম পরীক্ষার জন্য dashboard-এর **Session pooler** endpoint ব্যবহার করা হবে; session/prepared-statement আচরণ বজায় রাখতে transaction pooler port 6543 দিয়ে শুরু করা হবে না।
-এই project-এর dashboard-এ দেখা endpoint হলো `aws-0-ap-south-1.pooler.supabase.com:5432`। Deploy-এর আগে আবার Connect dialog দিয়ে যাচাই করতে হবে; region থেকে hostname অনুমান করা যাবে না।
+এই project-এর Connect dialog-এ পুনরায় যাচাই করা endpoint হলো `aws-0-ap-south-1.pooler.supabase.com:5432`। Region থেকে hostname অনুমান করা হয়নি। Hostinger থেকে password ছাড়া network/TLS verification পাস; authenticated database test এখনো বাকি।
 
 Server-এর private configuration-এ শেষ পর্যন্ত নিচের মানগুলো থাকবে। এগুলো পরিকল্পিত placeholders, কার্যকর credentials নয়:
 
@@ -52,7 +56,9 @@ LOG_LEVEL=warning
 ```
 
 `DB_URL` দিয়ে একই settings override হয়ে যাচ্ছে কি না পরীক্ষা করতে হবে। Password বা connection URL browser frontend, VITE variables, repo, deployment logs বা chat-এ দেওয়া যাবে না।
-`verify-full` hostname এবং certificate যাচাই করবে; certificate provider dashboard থেকে সংগ্রহ করে server-এর private directory-তে রাখতে হবে। SSL failure ঠিক করতে `prefer`, `disable`, বা certificate-check bypass ব্যবহার করা যাবে না।
+`verify-full` hostname এবং certificate যাচাই করবে; certificate provider dashboard থেকে সংগ্রহ করে server-এর private directory-তে স্থায়ীভাবে রাখতে হবে। Dashboard-এর certificate link দিয়ে temporary TLS test সফল হলেও permanent app certificate provisioning এখনো হয়নি। SSL failure ঠিক করতে `prefer`, `disable`, বা certificate-check bypass ব্যবহার করা যাবে না।
+
+পরবর্তী access prerequisite: Supabase connector-এ নির্বাচিত **Team Fahad Org** account যুক্ত করতে হবে, অথবা অনুমোদিত private credential handoff-এর ব্যবস্থা করতে হবে। Browser login থেকে database password পাওয়া যায় না; dashboard-ও বলছে creation-এর পরে password দেখা যায় না। Password reset করা হয়নি—এটি existing connections ভাঙতে পারে এবং credential entry/submission ব্যবহারকারীকে করতে হবে। Password/token chat, screenshots, GitHub বা public directory-তে দেওয়া যাবে না।
 
 ## Remote database provisioning — এখনো করা হয়নি
 
@@ -66,8 +72,8 @@ LOG_LEVEL=warning
 
 ## Hostinger-এ নিরাপদ files ও runtime
 
-- Selected CRM domain-এ PHP 8.4+ এবং `pdo_pgsql` বাস্তবে enable/verify করা দরকার। Parent WordPress site-এর PHP settings বদলানোর অনুমতি নেই। CLI PHP এবং web PHP আলাদাভাবে যাচাই করতে হবে।
-- CRM-এর Manage site parent domain-এর dashboard খুলছে। শুধু CRM folder-এর `.htaccess`-এ PHP 8.4 handler দেওয়া সম্ভব বলে provider documentation জানায়; এটি extension/options isolation নিশ্চিত করে না। Parent PHP version বদলানো যাবে না। `pdo_pgsql` enable করলে shared/account settings প্রভাবিত হতে পারে—সেই নির্দিষ্ট পরিবর্তনের আলাদা অনুমতি ও CLI/web verification প্রয়োজন।
+- Selected CRM domain-এ PHP 8.4 ও `pdo_pgsql` web/CLI দুটিতে enable/verify হয়েছে। Parent WordPress PHP version বদলানো হয়নি। Deployment-এর সময় এই prerequisite আবার পরীক্ষা করতে হবে।
+- CRM-এর Manage site parent domain-এর dashboard খুলছে। CRM folder-এর `.htaccess`-এ PHP 8.4 handler আছে; এটি extension/options isolation নিশ্চিত করে না। অনুমোদিত driver setup account-এর PHP 8.2/8.4 extension configuration প্রভাবিত করেছে, অন্য extension বন্ধ করা হয়নি।
 - পুরো Laravel repo `public_html`-এ clone করা যাবে না। `.env`, `vendor`, source, sessions, logs, certificate এবং config cache public web root-এর বাইরে রাখতে হবে।
 - বর্তমান CRM document root একটি আলাদা `public_html/crm` directory। এখানে কেবল Laravel public entrypoint এবং built assets থাকবে; entrypoint private app path ব্যবহার করবে। Private app-এর সুনির্দিষ্ট directory/SSH permissions যাচাইয়ের আগে path অনুমান করে deploy করা যাবে না।
 - প্রয়োজন authenticated SSH/SFTP বা সমমানের verified private-file access; PHP/static upload endpoint দিয়ে public webshell, migration runner বা remote-execution endpoint বানানো যাবে না।
@@ -92,7 +98,7 @@ Server runtime, SSH path ও credentials যাচাই না হওয়া প
 
 ## Preview চালু হওয়ার acceptance gate
 
-- [ ] CRM domain-এ PHP 8.4+ ও pgsql driver, CLI এবং private file access verified।
+- [x] CRM domain-এ PHP 8.4+ ও pgsql driver, CLI এবং private file access verified। Private application release এখনো তৈরি হয়নি।
 - [ ] Runtime credentials frontend/logs/repo-তে নেই; `.env`, app source, private certificate এবং logs HTTP দিয়ে পড়া যায় না।
 - [ ] Hostinger -> Supabase verified TLS connection; private schema এবং role grants verified।
 - [ ] Laravel migrations, registration/login, email verification ও password reset verified।
@@ -106,7 +112,7 @@ Server runtime, SSH path ও credentials যাচাই না হওয়া প
 
 Configuration tests check environment overrides, backward-compatible defaults এবং Laravel PDO DSN-এ certificate/SSL options যাওয়ার আচরণ; remote connection নয়।
 
-এই preparation-এর local completion gate পাস: Pint, PHPStan (zero errors), ৭৯টি PHP test / ৩৮৫ assertions, frontend formatting/lint, TypeScript, ৩টি UI test এবং build। PostgreSQL test server না থাকায় ২টি concurrency test স্থানীয়ভাবে skipped। Implementation commit `1d3beb8`-এর [SQLite ও PostgreSQL GitHub CI jobs](https://github.com/umar-vai/CRM/actions/runs/38168540383) দুটিই success। Remote schema/roles, certificate/TLS connection, SMTP এবং deployment/rollback পরীক্ষিত নয়।
+এই preparation-এর local completion gate পাস: Pint, PHPStan (zero errors), ৭৯টি PHP test / ৩৮৫ assertions, frontend formatting/lint, TypeScript, ৩টি UI test এবং build। PostgreSQL test server না থাকায় ২টি concurrency test স্থানীয়ভাবে skipped। Implementation commit `1d3beb8`-এর [SQLite ও PostgreSQL GitHub CI jobs](https://github.com/umar-vai/CRM/actions/runs/38168540383) দুটিই success। Remote web/CLI runtime ও password-free TLS verification পাস; authenticated DB/PDO connection, schema/roles, SMTP এবং deployment/rollback পরীক্ষিত নয়।
 
 ## Current primary references
 
@@ -114,5 +120,6 @@ Configuration tests check environment overrides, backward-compatible defaults �
 - [Supabase Data API grants, exposed schemas and security](https://supabase.com/docs/guides/api/securing-your-api)
 - [Supabase pricing and Free-plan limitations](https://supabase.com/pricing)
 - [Hostinger subdomain PHP handler এবং extension/CLI limitations](https://www.hostinger.com/support/4047803-how-to-change-the-php-version-for-subfolders-or-subdomains-in-hostinger/)
+- [LiteSpeed user-level detached PHP worker reload](https://docs.litespeedtech.com/lsws/cp/cpanel/php-user-ini/)
 
 Provider settings/prices পরিবর্তন হতে পারে; project creation, paid upgrade বা destructive action-এর আগে current settings ও explicit user authorization যাচাই করতে হবে।
