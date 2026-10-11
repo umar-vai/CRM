@@ -2,10 +2,10 @@
 
 return [
     'roles' => [
-        'owner' => ['leads.view', 'leads.create', 'leads.update', 'configuration.publish', 'audit.view', 'team.manage'],
-        'manager' => ['leads.view', 'leads.create', 'leads.update', 'audit.view'],
-        'agent' => ['leads.view', 'leads.create', 'leads.update'],
-        'auditor' => ['leads.view', 'audit.view'],
+        'owner' => ['leads.view', 'leads.create', 'leads.update', 'leads.activities.create', 'leads.convert', 'customers.view', 'configuration.publish', 'audit.view', 'team.manage'],
+        'manager' => ['leads.view', 'leads.create', 'leads.update', 'leads.activities.create', 'leads.convert', 'customers.view', 'audit.view'],
+        'agent' => ['leads.view', 'leads.create', 'leads.update', 'leads.activities.create', 'customers.view'],
+        'auditor' => ['leads.view', 'customers.view', 'audit.view'],
     ],
     'modules' => [
         'crm' => ['name' => 'CRM', 'status' => 'available', 'dependencies' => []],

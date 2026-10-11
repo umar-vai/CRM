@@ -1,4 +1,5 @@
 import { Head, Link, router, useForm } from '@inertiajs/react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { FieldErrors, WorkspaceNav } from '@/components/workspace-ui';
@@ -24,6 +25,9 @@ export default function Leads({
 }) {
     const base = '/workspaces/' + workspace.id + '/leads';
     const t = translator(workspace.locale);
+    const [statusErrors, setStatusErrors] = useState<Record<string, string>>(
+        {},
+    );
     const search = useForm({
         search: filters.search ?? '',
         status: filters.status ?? '',
@@ -75,6 +79,7 @@ export default function Leads({
             <p>
                 {leads.total} {t('records')}
             </p>
+            <FieldErrors errors={statusErrors} />
             <div className="grid gap-6 xl:grid-cols-[2fr_1fr]">
                 <div className="overflow-auto rounded-xl border">
                     <table className="w-full text-left text-sm">
@@ -89,14 +94,21 @@ export default function Leads({
                         <tbody>
                             {leads.data.map((lead) => (
                                 <tr className="border-b" key={lead.id}>
-                                    <td className="p-3">{lead.name}</td>
+                                    <td className="p-3">
+                                        <Link
+                                            className="underline"
+                                            href={base + '/' + lead.id}
+                                        >
+                                            {lead.name}
+                                        </Link>
+                                    </td>
                                     <td className="p-3">
                                         <div>{lead.email}</div>
                                         <div>{lead.phone}</div>
                                     </td>
                                     <td className="p-3">{t(lead.source)}</td>
                                     <td className="p-3">
-                                        {canUpdate ? (
+                                        {canUpdate && !lead.customer_exists ? (
                                             <select
                                                 className="rounded border bg-background p-2"
                                                 aria-label={
@@ -109,11 +121,19 @@ export default function Leads({
                                                     router.patch(
                                                         base + '/' + lead.id,
                                                         {
+                                                            version:
+                                                                lead.version,
                                                             status: e.target
                                                                 .value,
                                                         },
                                                         {
                                                             preserveScroll: true,
+                                                            onError:
+                                                                setStatusErrors,
+                                                            onSuccess: () =>
+                                                                setStatusErrors(
+                                                                    {},
+                                                                ),
                                                         },
                                                     )
                                                 }

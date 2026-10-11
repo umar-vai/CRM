@@ -99,7 +99,7 @@ class WorkspaceTest extends TestCase
         $user = User::factory()->create();
         $tenant = $this->workspace($user);
         $lead = $this->lead($tenant, $user, 'Example');
-        $this->actingAs($user)->patch("/workspaces/{$tenant->id}/leads/{$lead->id}", ['status' => 'qualified'])->assertRedirect();
+        $this->actingAs($user)->patch("/workspaces/{$tenant->id}/leads/{$lead->id}", ['status' => 'qualified', 'version' => 1])->assertRedirect();
         $this->assertDatabaseHas('leads', ['id' => $lead->id, 'status' => 'qualified']);
         $this->assertDatabaseHas('audit_logs', ['subject_id' => $lead->id, 'action' => 'lead.status_changed']);
     }

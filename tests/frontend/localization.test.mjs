@@ -17,3 +17,8 @@ await test('prototype keys cannot escape the dictionary lookup', () => {
     assert.equal(translator('en')('constructor'), 'constructor');
     assert.equal(translator('bn')('__proto__'), '__proto__');
 });
+await test('CRM workflow labels are localized', () => {
+    assert.equal(translator('bn')('convert'), 'কাস্টমার বানান');
+    assert.equal(translator('bn')('timeline'), 'কাজের ইতিহাস');
+    assert.equal(translator('en')('customers'), 'Customers');
+});

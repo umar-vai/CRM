@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ConfigurationController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\TeamController;
@@ -18,7 +19,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/', [WorkspaceController::class, 'show'])->name('workspaces.show');
         Route::get('leads', [LeadController::class, 'index'])->middleware('workspace.permission:leads.view')->name('leads.index');
         Route::post('leads', [LeadController::class, 'store'])->middleware('workspace.permission:leads.create')->name('leads.store');
+        Route::get('leads/{lead}', [LeadController::class, 'show'])->middleware(['workspace.permission:leads.view', 'sensitive'])->name('leads.show');
         Route::patch('leads/{lead}', [LeadController::class, 'update'])->middleware('workspace.permission:leads.update')->name('leads.update');
+        Route::post('leads/{lead}/activities', [LeadController::class, 'activity'])->middleware(['workspace.permission:leads.activities.create', 'throttle:30,1'])->name('leads.activity');
+        Route::post('leads/{lead}/convert', [LeadController::class, 'convert'])->middleware(['workspace.permission:leads.convert', 'throttle:10,1'])->name('leads.convert');
+        Route::get('customers', [CustomerController::class, 'index'])->middleware(['workspace.permission:customers.view', 'sensitive'])->name('customers.index');
         Route::get('configuration', [ConfigurationController::class, 'index'])->middleware('workspace.permission:configuration.publish')->name('configuration.index');
         Route::post('configuration', [ConfigurationController::class, 'store'])->middleware('workspace.permission:configuration.publish')->name('configuration.store');
         Route::middleware(['workspace.permission:team.manage', 'sensitive'])->group(function () {

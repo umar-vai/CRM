@@ -14,6 +14,9 @@ and inspect the exact account, project, paths and existing grants before use.
 - `postgres/preview-runtime-grants.sql`: explicit named-table privileges after
   Laravel migrations. Runtime cannot mutate audit/configuration history, perform
   DDL, read migration history, or use persistent job tables in sync queue mode.
+- `postgres/crm-workflow-grants.sql`: after the CRM workflow Laravel migration,
+  explicit SELECT/INSERT-only customer snapshot and lead activity grants. This is
+  a prepared operator asset, not applied automatically or proof of live deployment.
 
 The selected Supabase project was bootstrapped through its DDL migration tool.
 Laravel application tables still use Laravel's existing migration history; do not

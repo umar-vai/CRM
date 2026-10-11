@@ -47,6 +47,8 @@ Keep queue sync until reliable worker/tenant-context retry tests exist. Automati
 
 ### বাকি কাজ
 
+পরবর্তী user acceptance: user জানিয়েছেন registration email Inbox-এ এসেছে এবং link দিয়ে verify করেছেন; “CRM test” workspace dashboard screenshot দিয়েছেন। এটি user-reported success, agent-observed full browser E2E নয়। Password reset ও broader delivery tests বাকি।
+
 নিজের email দিয়ে [Register](https://crm.abdullahfahad.com/register) করে verification message-এর Inbox/Spam placement এবং link acceptance যাচাই; তারপর password reset ও workspace/lead/team browser flow পরীক্ষা। Agent-initiated external test-এর জন্য recipient নির্দিষ্ট হতে হবে; real account স্বয়ংক্রিয়ভাবে বানানো হয়নি। Verification bypass নয়।
 বর্তমান full-suite tests transport/notification logic-এর regression evidence; বাস্তব external delivery-এর বিকল্প নয়। SMTP/DB/config backups ও credential recovery private থাকবে। Automatic credential rotation, invitation email এবং GitHub auto-deployment implemented নয়।
 

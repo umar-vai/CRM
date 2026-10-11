@@ -1,5 +1,32 @@
 # Verification reports
 
+## CRM workflow block — 2026-10-12, repository implementation
+
+New detail/edit/activity/conversion/customer-list increment: local gate passed with
+96 PHP tests, 583 assertions, 4 frontend tests, Pint, PHPStan zero errors, TypeScript,
+frontend format/lint and build. Five PostgreSQL-only tests skipped locally; three new
+tests use independent connections and bounded lock timeout for conversion retry,
+stale edit and different-lead/same-contact conversion contention. CI evidence pending.
+Feature coverage includes foreign tenant denial, role checks/current-role recheck,
+no-context failure, optimistic versions, UUID replay/conflicting intent, duplicate
+suggestions/customer review, source snapshots and transactional audit rollback.
+Schema tests cover cross-tenant composite FKs and isolated down/up preserving an
+existing lead. Migration down is destructive to new customer/activity data; it is
+not an authorized or recommended live rollback procedure.
+
+Initial detail-page tests failed because the existing Vite manifest did not include
+the new pages; rebuilding resolved those failures. Do not disable tenant scopes or
+claim checks passed before running the full post-build gate.
+
+The new code/migration/grant assets are NOT yet deployed to Hostinger/Supabase.
+UI has type/build checks; full new-block browser interaction/mobile/accessibility
+testing is still pending. Existing owner/team regression tests remain in the suite.
+See [CRM phase report](PHASE_1_CRM_BN.md).
+
+User separately reported receiving and clicking the registration verification email
+and supplied a workspace dashboard screenshot. This is user acceptance evidence;
+external password-reset delivery and full automated authenticated E2E remain unverified.
+
 ## Approved mail DNS + live SMTP integration — 2026-10-12
 
 This supersedes the earlier mailbox-only checkpoint below. Specific approval covered

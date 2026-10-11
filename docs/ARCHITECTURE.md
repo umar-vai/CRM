@@ -15,7 +15,7 @@ Database best-practices review influenced these indexes and the short transactio
 ## Modules
 
 - Tenancy: workspace, memberships, role registry, owner-managed invitations/team changes and fail-closed model trait.
-- CRM: lead records and authorized transitions between the five basic statuses.
+- CRM: tenant-owned leads, versioned edits, paginated activities and conversion snapshots/customer search.
 - Configuration: tenant-specific terminology snapshots and optimistic version check.
 - Audit: append-only application writes of metadata for covered operations. DB credentials can still alter rows; DB immutability controls are a future hardening task.
 
@@ -32,7 +32,10 @@ Tenant-owned lead/configuration/audit rows reference a tenant.
 Foreign keys prevent orphaning audited tenants. Hard-delete UI is intentionally absent.
 Self-service account deletion is blocked while memberships or historical business records exist.
 This is a retention safeguard, not a complete account-closure/privacy workflow.
-Leads do not deduplicate yet. Source labels such as WhatsApp do not imply a live integration.
+Lead email is lowercased and phone display separators stripped; no country-code inference.
+Detail suggests up to five same-workspace leads sharing a phone or email. No fuzzy/global
+deduplication, automatic merge or contact uniqueness is assumed. Source labels such as
+WhatsApp do not imply a live integration.
 Membership provisioning uses owner-only team management and authenticated, verified recipient acceptance.
 Never add an unauthenticated membership-write endpoint.
 
@@ -69,6 +72,28 @@ and competing role-change/removal with stale retry rejection. This is determinis
 not a stress test or proof of every possible concurrent schedule.
 
 ## Production blockers
+
+### CRM workflow transaction protocol
+
+All CRM writers lock tenant first, then lead, matching team/configuration lock order.
+Fresh membership permission is rechecked under the workspace lock. Detail/status edits,
+activities and conversion require the lead's integer version; actual writes increment it.
+No-op edits do not create history. Activity UUID retries are checked before stale version;
+same actor/lead/kind/body returns success without new rows, conflicting reuse is rejected.
+Conversion retries return the existing customer before version comparison; first conversion
+copies contact/source to a read-only snapshot, sets won and emits a redacted system event.
+A workspace lock serializes competing different-lead conversions with matching contacts;
+review is required instead of silent merge. This coarse lock needs contention/load testing.
+
+Composite (tenant_id, lead_id) foreign keys refer to unique (tenant_id, id) on leads.
+One customer per tenant/lead and unique tenant/activity request key enforce duplicate guards.
+Indexes start with tenant and lead for timeline pagination; actors have FK indexes.
+Activity note text lives in authorized business records, never audit metadata. GET responses
+for detail/customer list use no-store. Legacy leads are not given invented historical events.
+The prepared runtime grant asset allows SELECT/INSERT only on snapshots/activities;
+it is not evidence that these new tables or permissions are already live.
+
+### Remaining production gates
 
 - Broader PostgreSQL concurrency/load coverage, backup/restore drill and migration rollout/rollback.
 - Invitation delivery integration, ownership-transfer workflow, audit viewer, retention and deletion policy.

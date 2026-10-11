@@ -19,6 +19,7 @@ export function WorkspaceNav({
         >
             <Link href={base}>{t('overview')}</Link>
             <Link href={base + '/leads'}>{t('leads')}</Link>
+            <Link href={base + '/customers'}>{t('customers')}</Link>
             {canManageTeam && <Link href={base + '/team'}>{t('team')}</Link>}
             {canConfigure && (
                 <Link href={base + '/configuration'}>{t('configuration')}</Link>

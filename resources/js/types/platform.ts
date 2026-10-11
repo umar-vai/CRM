@@ -13,6 +13,24 @@ export type Lead = {
     phone: string | null;
     source: string;
     status: string;
+    notes: string | null;
+    version: number;
+    customer_exists?: boolean;
+};
+export type Customer = Omit<Lead, 'status' | 'notes' | 'version'> & {
+    lead_id: string;
+};
+export type LeadActivity = {
+    id: string;
+    kind: string;
+    body: string | null;
+    created_at: string;
+    metadata: {
+        fields?: string[];
+        from?: string;
+        to?: string;
+        customer_id?: string;
+    };
 };
 export type Pagination<T> = {
     data: T[];

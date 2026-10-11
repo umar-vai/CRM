@@ -1,13 +1,15 @@
 # NovaFlow — configurable ERP + CRM
 
 BizNova-inspired **original implementation**, not a copy of proprietary source code.
-Current milestone: a working multi-workspace CRM foundation with owner-managed teams. **Not production-ready ERP.**
+Current milestone: multi-workspace CRM with owner-managed teams and lead detail/activity/customer workflows. **Not production-ready ERP.**
 
 Online foundation preview: [crm.abdullahfahad.com](https://crm.abdullahfahad.com).
 First Hostinger/Supabase operator release is live. Hostinger SMTP is configured and one synthetic
 self-addressed message reached its Inbox with SPF/DKIM/DMARC pass headers. GitHub auto-deployment is not configured.
-Public pages render, but registration email verification/password-reset delivery and authenticated
-browser E2E remain unverified. Use synthetic data only. See the [deployment runbook](docs/HOSTINGER_PREVIEW_BN.md).
+The user reports receiving the registration email and verifying its link, and supplied a workspace
+dashboard screenshot. This is user acceptance evidence, not a complete automated browser E2E;
+password-reset delivery remains unverified. The new CRM workflow block is not yet deployed.
+Use synthetic data only. See the [deployment runbook](docs/HOSTINGER_PREVIEW_BN.md).
 
 ## Implemented
 
@@ -17,6 +19,9 @@ browser E2E remain unverified. Use synthetic data only. See the [deployment runb
 - Single-use, email-bound invitation links: 72-hour expiry, revoke/reissue, token hashing and verified recipient acceptance. Share manually; invitation email delivery is not implemented.
 - Ownership cannot be granted, removed or demoted through team management; ownership transfer is a separate future workflow.
 - Tenant-scoped leads: create, paginate, search, filter, update status.
+- Lead detail/edit with required version checks, note/call/meeting timeline, duplicate suggestions;
+  owner/manager customer conversion with retry idempotency, read-only snapshots and customer search.
+  This new block is repository implementation pending live rollout; see the phase report.
 - Business terminology: owner publishes immutable versions with stale-write protection.
 - Transactional audit records for lead changes, configuration publishing and team changes, excluding contact values and invitation secrets.
 - Bengali/English workspace navigation, overview and lead-screen labels based on workspace locale. Full app localization and locale editing are not implemented.
@@ -65,6 +70,7 @@ npm run build
 - [Security checklist](docs/SECURITY.md)
 - [Milestones and current status](docs/ROADMAP.md)
 - [Phase 1 team-management report and Bengali usage guide](docs/PHASE_1_TEAM_BN.md)
+- [CRM workflow block report and Bengali usage guide](docs/PHASE_1_CRM_BN.md)
 - [Hostinger + external PostgreSQL preview runbook](docs/HOSTINGER_PREVIEW_BN.md): actual deployed SHA, private server layout, runtime privilege checks and remaining email/automation/recovery gates.
 - [Email setup report](docs/EMAIL_SETUP_BN.md): approved mail DNS, private SMTP integration and synthetic Inbox receipt; external verification/reset delivery still unverified.
 - [GPT continuation instructions](AGENTS.md)

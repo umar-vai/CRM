@@ -19,6 +19,26 @@ See [verification report](VERIFICATION.md). Foundation PostgreSQL/SQLite CI pass
 This is a scoped team-management increment, **not all of M1**. Ownership transfer and automatic
 invitation email delivery are deferred. See [Bengali phase report](PHASE_1_TEAM_BN.md).
 
+## M1 CRM workflow block — implemented, local gate passed; rollout pending
+
+- Lead detail and partial contact/status edits with required optimistic version.
+- Paginated note/call/meeting and system activity timeline; retry-safe activity UUIDs.
+- Tenant-scoped normalized-contact duplicate suggestions (at most five); no automatic merge.
+- Owners/managers convert a lead once to a customer snapshot; retry returns the existing
+  customer without duplicate history/audit. Matching existing customer contact blocks a
+  second conversion for review. Converted leads are read-only; activities remain possible.
+- Current membership rechecked inside tenant-first transaction locks; changes/history/audit
+  roll back together. Tenant-qualified composite foreign keys protect new lead references.
+- Customer list/search/pagination; Bengali/English labels and timezone-formatted timeline.
+- Local full gate: 96 PHP tests / 583 assertions, 4 frontend tests, Pint, PHPStan,
+  TypeScript, frontend checks and build. Five PostgreSQL-only tests skipped locally;
+  three new independent-connection lock tests must pass PostgreSQL CI before rollout.
+
+The new Laravel migration/operator grants are prepared, not applied to live Supabase.
+Live app is still source `033e9e9` until a separately verified rollout. See
+[CRM block report](PHASE_1_CRM_BN.md). This is not complete CRM/M1: assignment,
+tasks/follow-ups, merge, Kanban, imports, consent and campaign attribution remain planned.
+
 ## Next increments
 
 ### User-prioritized online preview — initial operator release live
@@ -43,7 +63,7 @@ Deployed commit's [SQLite/PostgreSQL CI](https://github.com/umar-vai/CRM/actions
 both passed, including PG locking tests. Post-migration Supabase security advisors
 returned no findings, not complete security certification.
 
-Remaining gates: SMTP verification/reset delivery; authenticated workspace/lead/team
+Remaining gates: password-reset delivery and broader external mail acceptance; authenticated lead/team
 browser E2E; scoped CI-gated automatic deployment/independent SSH host verification;
 release rollback/isolated DB restore; rotation before runtime expiry
 2027-01-09 20:17:15 UTC. No verification bypass/default
@@ -61,10 +81,13 @@ in the approved mailbox Inbox, with SPF/DKIM/DMARC pass headers. No real account
 verification bypass added. External provider delivery, registration/reset browser E2E,
 automatic invitation mail and automatic deployment remain separate gates.
 See [email report](EMAIL_SETUP_BN.md); self-delivery is not general deliverability proof.
+The user subsequently confirmed Inbox receipt and registration-link verification and
+provided a workspace dashboard screenshot. Record this as user acceptance, not a
+complete automated registration/password-reset/tenant browser test.
 
 ### Product increments
 
-1. CRM detail/edit, activity timeline, customer conversion and duplicate handling, with tenant/permission/transaction tests.
+1. Roll out the tested CRM block; follow-up CRM assignment/tasks/import/merge remain separate slices.
 2. Industry package manifests, module entitlements/dependencies, typed custom fields, draft/preview/publish/rollback.
 3. Sales estimates/orders/invoices with explicit monetary and tax rules.
 4. Inventory ledger, purchasing, reservations and idempotent posting.
