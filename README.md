@@ -59,6 +59,7 @@ npm run build
 - [Security checklist](docs/SECURITY.md)
 - [Milestones and current status](docs/ROADMAP.md)
 - [Phase 1 team-management report and Bengali usage guide](docs/PHASE_1_TEAM_BN.md)
+- [Hostinger + external PostgreSQL preview runbook](docs/HOSTINGER_PREVIEW_BN.md): selected target, safe server configuration and outstanding deployment gates; not a live-deployment claim.
 - [GPT continuation instructions](AGENTS.md)
 
 The blueprint describes the target product, **not a claim that every feature exists**.

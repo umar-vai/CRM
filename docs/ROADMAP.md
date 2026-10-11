@@ -21,6 +21,23 @@ invitation email delivery are deferred. See [Bengali phase report](PHASE_1_TEAM_
 
 ## Next increments
 
+### User-prioritized online preview — configuration preparation verified locally
+
+The user selected existing Hostinger Business hosting and a dedicated existing Supabase
+PostgreSQL project for `crm.abdullahfahad.com`. DNS and an HTTPS default hosting page were
+verified; NovaFlow is **not deployed**, and auto-deployment is **not configured**.
+PostgreSQL search-path and CA-certificate configuration support and isolated configuration
+tests are added. Local completion gate passed: Pint, PHPStan (zero errors),
+79 PHP tests with 385 assertions, frontend formatting/lint, TypeScript, 3 UI tests and build.
+Two PostgreSQL concurrency tests were skipped locally because no PostgreSQL test server
+is available. Configuration tests do not prove remote TLS, role grants or connectivity.
+This increment's GitHub CI result is not yet verified.
+Remote private schema/roles, Hostinger PHP/SSH access, verified TLS DB connectivity,
+email delivery, migrations and deployment/rollback remain outstanding.
+See [preview runbook](HOSTINGER_PREVIEW_BN.md). This does not change the next CRM feature milestone.
+
+### Product increments
+
 1. CRM detail/edit, activity timeline, customer conversion and duplicate handling, with tenant/permission/transaction tests.
 2. Industry package manifests, module entitlements/dependencies, typed custom fields, draft/preview/publish/rollback.
 3. Sales estimates/orders/invoices with explicit monetary and tax rules.
