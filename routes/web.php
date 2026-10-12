@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ConfigurationController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\IndustryPackageController;
 use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\TeamController;
@@ -25,6 +26,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('leads/{lead}/convert', [LeadController::class, 'convert'])->middleware(['workspace.permission:leads.convert', 'throttle:10,1'])->name('leads.convert');
         Route::get('customers', [CustomerController::class, 'index'])->middleware(['workspace.permission:customers.view', 'sensitive'])->name('customers.index');
         Route::get('configuration', [ConfigurationController::class, 'index'])->middleware('workspace.permission:configuration.publish')->name('configuration.index');
+        Route::get('configuration/packages', [IndustryPackageController::class, 'index'])->middleware(['workspace.permission:configuration.preview', 'sensitive', 'throttle:30,1'])->name('configuration.packages');
         Route::post('configuration', [ConfigurationController::class, 'store'])->middleware('workspace.permission:configuration.publish')->name('configuration.store');
         Route::middleware(['workspace.permission:team.manage', 'sensitive'])->group(function () {
             Route::get('team', [TeamController::class, 'index'])->name('team.index');

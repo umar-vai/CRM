@@ -22,7 +22,14 @@ Database best-practices review influenced these indexes and the short transactio
 Configuration publishing locks the tenant row then compares expected version inside the transaction.
 Unique (tenant_id, version) is an additional guard.
 SQLite tests verify behavior, not PostgreSQL row-lock concurrency.
-Only terminology is configurable today. The universal customization blueprint is the target design:
+Only terminology can be published today. A code-shipped, versioned Service/Clinic CRM catalog
+and strict five-type field validator provide a read-only impact preview, not installations/values.
+Package ID/version, digest fixture, schema, dependencies/cycles, core compatibility and server
+preview allowance are checked. Published tenant labels win over proposed package labels.
+Owner-only preview checks base configuration version; it has no business writes or audit mutation.
+No billing entitlements, saved drafts, custom values, install/upgrade or rollback exist yet.
+See PHASE_2_PACKAGES_BN.md for this contract and the next safe persistence increment.
+The universal customization blueprint is the target design:
 shared core -> industry package -> tenant overrides. Industry selection currently records metadata only.
 
 ## Data ownership

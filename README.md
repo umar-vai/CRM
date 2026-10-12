@@ -24,6 +24,8 @@ Use synthetic data only. See the [deployment runbook](docs/HOSTINGER_PREVIEW_BN.
   owner/manager customer conversion with retry idempotency, read-only snapshots and customer search.
   This block is live in the synthetic preview; see the phase report for remaining browser E2E gates.
 - Business terminology: owner publishes immutable versions with stale-write protection.
+- Read-only Service/Clinic CRM package previews with versioned manifests, dependency/core/permission
+  checks and typed-field validation foundation. Not package installation or saved custom values.
 - Transactional audit records for lead changes, configuration publishing and team changes, excluding contact values and invitation secrets.
 - Bengali/English workspace navigation, overview and lead-screen labels based on workspace locale. Full app localization and locale editing are not implemented.
 
@@ -72,6 +74,7 @@ npm run build
 - [Milestones and current status](docs/ROADMAP.md)
 - [Phase 1 team-management report and Bengali usage guide](docs/PHASE_1_TEAM_BN.md)
 - [CRM workflow block report and Bengali usage guide](docs/PHASE_1_CRM_BN.md)
+- [Business package preview and next implementation contract](docs/PHASE_2_PACKAGES_BN.md)
 - [Hostinger + external PostgreSQL preview runbook](docs/HOSTINGER_PREVIEW_BN.md): actual deployed SHA, private server layout, runtime privilege checks and remaining email/automation/recovery gates.
 - [Email setup report](docs/EMAIL_SETUP_BN.md): approved mail DNS, private SMTP integration and synthetic Inbox receipt; external verification/reset delivery still unverified.
 - [GPT continuation instructions](AGENTS.md)

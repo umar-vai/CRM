@@ -1,5 +1,26 @@
 # Verification reports
 
+## Industry package preview foundation — 2026-10-12
+
+Read-only code-shipped Service/Clinic CRM manifests and strict five-type field schema/value
+validator implemented; eight new tests / 124 assertions. Full local gate passed: 104 PHP
+tests / 707 assertions (109 total, five PostgreSQL-only skipped locally), Pint, PHPStan
+zero errors, TypeScript, frontend format/lint, four frontend tests and production build.
+Initial test helper collided with an inherited `query()` method; renamed to previewQuery.
+Permission-blocker fixture initially removed the registry's sole definition of a permission;
+corrected fixture distinguishes unknown permission rejection from a known ungranted permission.
+Pint found two ignored deployment helper files; formatted them, then reran the full gate successfully.
+No tenant scope or failing assertion was disabled to pass checks.
+
+Coverage: tenant/role denial, no-store/read-only/context cleanup, stale base config,
+override preservation/isolation, unknown package/version/schema/keys/permissions, missing/cyclic
+dependencies, server compatibility/module/allowance blockers, strict boolean/integer/date/select
+types/limits, reserved keys and released digest fixtures. Previous CRM/team regressions preserved.
+No new DB schema or locking changes; existing five PostgreSQL lock tests remain in CI.
+CI and live preview rollout for this new slice are pending, not inferred from local results.
+No install/upgrade/uninstall, saved field values, schema migration/publish/rollback or paid
+entitlement system implemented. See [phase contract](PHASE_2_PACKAGES_BN.md).
+
 ## CRM workflow block — 2026-10-12, implementation and live preview rollout
 
 New detail/edit/activity/conversion/customer-list increment: local gate passed with

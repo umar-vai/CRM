@@ -1,4 +1,4 @@
-import { Head, useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { FieldErrors, WorkspaceNav } from '@/components/workspace-ui';
@@ -24,6 +24,14 @@ export default function Configuration({
                 Configure {workspace.name}
             </h1>
             <WorkspaceNav workspace={workspace} canConfigure />
+            <Link
+                href={'/workspaces/' + workspace.id + '/configuration/packages'}
+                className="inline-block underline"
+            >
+                {workspace.locale === 'bn'
+                    ? 'ব্যবসার প্যাকেজ প্রিভিউ দেখুন'
+                    : 'Explore industry package previews'}
+            </Link>
             <p>
                 Published version: {configuration.version}. Changes are saved as
                 a new immutable version.
@@ -60,9 +68,9 @@ export default function Configuration({
                 </Button>
             </form>
             <p className="text-sm text-muted-foreground">
-                Customer label is stored for future customer screens; this
-                milestone applies the lead label to CRM. Layout, custom fields
-                and workflow builders come later.
+                Labels apply to CRM lead/customer screens. Industry package
+                preview is read-only; saved custom fields, layouts and workflow
+                builders come later.
             </p>
         </div>
     );

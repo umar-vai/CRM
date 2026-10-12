@@ -47,6 +47,18 @@ tasks/follow-ups, merge, Kanban, imports, consent and campaign attribution remai
 
 ## Next increments
 
+### Business customization — catalog/typed-schema preview slice
+
+Implemented read-only Service/Clinic CRM v1.0.0 manifests with schema/digest version pins,
+dependency/cycle validation, core compatibility, server preview allowance and owner permissions.
+Existing tenant terminology preserved; expected config version protects preview from stale state.
+Strict text/integer/boolean/date/select definitions/value validator; not persisted custom values.
+No installation, draft persistence, configuration envelope migration, publish/rollback or billing
+entitlement implementation. No DB schema/locking changes; CRM/team PG regressions preserved.
+Local full gate passed: 104 PHP tests / 707 assertions, 4 frontend tests/checks/build;
+5 PostgreSQL-only skipped locally. New-slice CI/live status tracked separately;
+see [phase report](PHASE_2_PACKAGES_BN.md) and [verification](VERIFICATION.md).
+
 ### User-prioritized online preview — initial operator release live
 
 [crm.abdullahfahad.com](https://crm.abdullahfahad.com) now serves NovaFlow from existing
@@ -93,7 +105,8 @@ complete automated registration/password-reset/tenant browser test.
 
 ### Product increments
 
-1. Industry package manifests, module entitlements/dependencies, typed custom fields, draft/preview/publish/rollback.
+1. Industry package persistence: schema-versioned immutable config envelopes, typed values,
+   entitlement enforcement, draft/preview/publish/rollback and installation idempotency.
 2. Follow-up CRM assignment/tasks/import/merge remain separate slices.
 3. Sales estimates/orders/invoices with explicit monetary and tax rules.
 4. Inventory ledger, purchasing, reservations and idempotent posting.
