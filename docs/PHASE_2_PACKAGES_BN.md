@@ -13,8 +13,13 @@ Inquiry/Patient এবং service-interest/preferred-date দেখায়; Servi
 আগের প্রকাশিত terminology tenant override হিসেবে থাকে; silently overwrite নয়।
 Preview settings/lead/customer/audit rows বদলায় না এবং package install করে না।
 
-এই slice-এর repository implementation তৈরি; live deployment/CI ফল verification report-এ
-আলাদা লিখতে হবে। GitHub push নিজে hosting আপডেট নয়।
+এই slice commit `72cf60c`-এ GitHub-এ আছে। User স্পষ্টভাবে “এখন শুধু GitHub-এ রাখো”
+নির্বাচন করেছেন; Hostinger-এ এটি deploy হয়নি। Live source `b26239d`-এর CRM workflows
+অপরিবর্তিত। নতুন deployment request ছাড়া package preview live করবেন না।
+এই commit-এর [SQLite/PostgreSQL CI](https://github.com/umar-vai/CRM/actions/runs/38197853453)
+দুটো পাস। Local full gate: ১০৪ PHP tests / ৭০৭ assertions, ৪ frontend tests,
+Pint/PHPStan/TypeScript/frontend checks/build; ৫ PG-only local-এ skipped, PG CI-তে covered।
+GitHub push নিজে hosting আপডেট নয়।
 
 ## Technical contract
 

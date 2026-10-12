@@ -17,7 +17,11 @@ override preservation/isolation, unknown package/version/schema/keys/permissions
 dependencies, server compatibility/module/allowance blockers, strict boolean/integer/date/select
 types/limits, reserved keys and released digest fixtures. Previous CRM/team regressions preserved.
 No new DB schema or locking changes; existing five PostgreSQL lock tests remain in CI.
-CI and live preview rollout for this new slice are pending, not inferred from local results.
+Implementation commit `72cf60c9f58900fbab759a3fd0bae5d509695034` pushed; its
+[SQLite/PostgreSQL CI](https://github.com/umar-vai/CRM/actions/runs/38197853453) completed
+successfully for both jobs, including retained CRM/team PostgreSQL lock tests.
+User explicitly chose GitHub-only for
+the package preview; no Hostinger deployment or DB changes for this slice. Live remains b26239d.
 No install/upgrade/uninstall, saved field values, schema migration/publish/rollback or paid
 entitlement system implemented. See [phase contract](PHASE_2_PACKAGES_BN.md).
 

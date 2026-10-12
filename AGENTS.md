@@ -36,6 +36,8 @@ preserve tenant/permission/stale-write/duplicate/idempotency/audit-rollback test
 Check the current rollout status before claiming the live preview contains this block.
 CRM source b26239d rollout is verified. Read-only package manifests/typed-field validator are implemented;
 check their current CI/live status before claiming preview availability.
+User explicitly chose GitHub-only for package preview commit 72cf60c. Do not deploy this
+slice to Hostinger without a new deployment request; live source remains b26239d.
 Continue with schema-versioned immutable configuration envelopes, draft/preview/publish/rollback,
 typed custom-value persistence and idempotent installation. Preserve legacy terminology versions.
 Do not treat package preview as installation, saved values or commercial billing entitlement.

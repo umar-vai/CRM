@@ -25,7 +25,8 @@ Use synthetic data only. See the [deployment runbook](docs/HOSTINGER_PREVIEW_BN.
   This block is live in the synthetic preview; see the phase report for remaining browser E2E gates.
 - Business terminology: owner publishes immutable versions with stale-write protection.
 - Read-only Service/Clinic CRM package previews with versioned manifests, dependency/core/permission
-  checks and typed-field validation foundation. Not package installation or saved custom values.
+  checks and typed-field validation foundation. Repository-only at the user's request; NOT live.
+  Not package installation or saved custom values.
 - Transactional audit records for lead changes, configuration publishing and team changes, excluding contact values and invitation secrets.
 - Bengali/English workspace navigation, overview and lead-screen labels based on workspace locale. Full app localization and locale editing are not implemented.
 

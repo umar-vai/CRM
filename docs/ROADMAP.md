@@ -55,8 +55,11 @@ Existing tenant terminology preserved; expected config version protects preview 
 Strict text/integer/boolean/date/select definitions/value validator; not persisted custom values.
 No installation, draft persistence, configuration envelope migration, publish/rollback or billing
 entitlement implementation. No DB schema/locking changes; CRM/team PG regressions preserved.
+User chose GitHub-only for this slice; it is not deployed. Live source remains b26239d.
 Local full gate passed: 104 PHP tests / 707 assertions, 4 frontend tests/checks/build;
-5 PostgreSQL-only skipped locally. New-slice CI/live status tracked separately;
+5 PostgreSQL-only skipped locally. Implementation 72cf60c's
+[SQLite/PostgreSQL CI](https://github.com/umar-vai/CRM/actions/runs/38197853453) both passed;
+package preview remains GitHub-only, not live;
 see [phase report](PHASE_2_PACKAGES_BN.md) and [verification](VERIFICATION.md).
 
 ### User-prioritized online preview — initial operator release live
