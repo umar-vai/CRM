@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - release/ux-foundation-from-live
   pull_request:
 
 permissions:
