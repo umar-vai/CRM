@@ -1,4 +1,4 @@
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import { ChevronRight, Settings2 } from 'lucide-react';
 import type { Workspace } from '@/types/platform';
 
@@ -11,6 +11,7 @@ export function WorkspaceNav({
 }) {
     const base = '/workspaces/' + workspace.id;
     const bn = workspace.locale === 'bn';
+    const currentPath = usePage().url.split('?')[0];
 
     return (
         <div className="flex flex-wrap items-center justify-between gap-3 border-b pb-4">
@@ -25,7 +26,7 @@ export function WorkspaceNav({
                 <Link
                     className="truncate font-medium text-foreground transition-colors hover:underline"
                     href={base}
-                    aria-current={window.location.pathname === base ? 'page' : undefined}
+                    aria-current={currentPath === base ? 'page' : undefined}
                 >
                     {workspace.name}
                 </Link>
