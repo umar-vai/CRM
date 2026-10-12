@@ -19,7 +19,7 @@ See [verification report](VERIFICATION.md). Foundation PostgreSQL/SQLite CI pass
 This is a scoped team-management increment, **not all of M1**. Ownership transfer and automatic
 invitation email delivery are deferred. See [Bengali phase report](PHASE_1_TEAM_BN.md).
 
-## M1 CRM workflow block — implemented, local and CI gates passed; rollout pending
+## M1 CRM workflow block — implemented, local/CI gates passed; preview rollout verified
 
 - Lead detail and partial contact/status edits with required optimistic version.
 - Paginated note/call/meeting and system activity timeline; retry-safe activity UUIDs.
@@ -37,8 +37,11 @@ invitation email delivery are deferred. See [Bengali phase report](PHASE_1_TEAM_
 Implementation commit `b26239dab0d4af4341fd850f235e4bd0afd2b9b1`:
 [SQLite/PostgreSQL CI](https://github.com/umar-vai/CRM/actions/runs/38176962975) both succeeded.
 
-The new Laravel migration/operator grants are prepared, not applied to live Supabase.
-Live app is still source `033e9e9` until a separately verified rollout. See
+Live app now serves tested source `b26239d`. The eighth Laravel migration and strict
+SELECT/INSERT-only customer/activity runtime grants are applied; migrator is NOLOGIN.
+Previous functional release and public assets are retained privately. Two-workspace
+rollback-only runtime smoke and authenticated workspace/leads/customers browser reads passed.
+Full browser mutation E2E and release/DB restore drills remain untested. See
 [CRM block report](PHASE_1_CRM_BN.md). This is not complete CRM/M1: assignment,
 tasks/follow-ups, merge, Kanban, imports, consent and campaign attribution remain planned.
 
@@ -48,10 +51,10 @@ tasks/follow-ups, merge, Kanban, imports, consent and campaign attribution remai
 
 [crm.abdullahfahad.com](https://crm.abdullahfahad.com) now serves NovaFlow from existing
 Hostinger Business hosting and the selected Team Fahad Supabase PostgreSQL project.
-Deployed source SHA: `033e9e929dd3309603276fee11d0486bf4b37b78`; no stack replacement.
+Deployed source SHA: `b26239dab0d4af4341fd850f235e4bd0afd2b9b1`; no stack replacement.
 Private app/vendor/storage/config/certificate are outside public_html; public assets
 and entrypoint replaced the backed-up default page. Parent WordPress is unchanged.
-Seven Laravel migrations and explicit named runtime grants are applied in private
+Eight Laravel migrations and explicit named runtime grants are applied in private
 `novaflow` schema. Runtime cannot mutate audit/config history or perform DDL; migrator
 NOLOGIN after setup. Restricted Hostinger PDO uses verify-full and provider CA.
 Backend pooler-to-database SSL flag false is separate from verified client-to-pooler
@@ -90,8 +93,8 @@ complete automated registration/password-reset/tenant browser test.
 
 ### Product increments
 
-1. Roll out the tested CRM block; follow-up CRM assignment/tasks/import/merge remain separate slices.
-2. Industry package manifests, module entitlements/dependencies, typed custom fields, draft/preview/publish/rollback.
+1. Industry package manifests, module entitlements/dependencies, typed custom fields, draft/preview/publish/rollback.
+2. Follow-up CRM assignment/tasks/import/merge remain separate slices.
 3. Sales estimates/orders/invoices with explicit monetary and tax rules.
 4. Inventory ledger, purchasing, reservations and idempotent posting.
 5. Double-entry accounting, financial period controls and reconciliations.

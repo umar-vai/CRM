@@ -3,10 +3,11 @@
 ## এখন কী চালু আছে — 2026-10-12
 
 [অনলাইন NovaFlow](https://crm.abdullahfahad.com) এখন আসল Laravel/Inertia app; Hostinger default page নয়।
-Deployed source: `033e9e929dd3309603276fee11d0486bf4b37b78`। এটি প্রথম operator deployment, **GitHub auto-deployment নয়**।
+Deployed source: `b26239dab0d4af4341fd850f235e4bd0afd2b9b1`। CRM workflow rollout verified; **GitHub auto-deployment নয়**।
 Home, login, registration ও Laravel health page HTTP 200; browser-এ home/login render হয়েছে।
 Hostinger SMTP configured; একটি synthetic self-addressed test email Inbox-এ পাওয়া গেছে এবং SPF/DKIM/DMARC pass headers আছে।
-External email provider-এ verification/password-reset delivery ও verified workspace browser flow এখনো acceptance gate পাস করেনি।
+User registration email Inbox receipt/link verification confirm করেছেন। Authenticated workspace/leads/customers browser reads পাস;
+password reset ও সম্পূর্ণ browser mutation E2E acceptance বাকি।
 কোনো public default account/password বানানো হয়নি। এটি synthetic preview, production-ready ERP নয়; বাস্তব customer/financial data ব্যবহার করবেন না।
 
 ## ব্যবস্থা ও private files
@@ -19,21 +20,22 @@ External email provider-এ verification/password-reset delivery ও verified wo
 ```text
 /home/u148519723/domains/abdullahfahad.com/
   novaflow-preview/                       private parent: 0700
-    current -> releases/033e9e929dd3309603276fee11d0486bf4b37b78
+    current -> releases/b26239dab0d4af4341fd850f235e4bd0afd2b9b1
     releases/<commit>/                     source/vendor/private config cache
     shared/config/app.env                  runtime settings/secrets: 0600
     shared/config/migration.env            disabled migrator settings: 0600
     shared/config/supabase-ca.crt           provider CA: 0600
     shared/storage/                        cache/views/logs/private files
     shared/bootstrap-backup/               original default.php/.htaccess
+    shared/rollout-b26239d/                 previous functional release link/public backup
   public_html/crm/                         index.php/.htaccess/built assets
 ```
 
 পুরোনো default page ও .htaccess backup নেওয়া হয়েছে; placeholder private `default-original.php` backup-এ সরানো হয়েছে, recoverable।
 Source/.env/vendor/certificate/config cache public root-এর বাইরে। Public storage link, command runner, phpinfo, hot file বা dev server নেই।
 Temporary provisioning/smoke scripts ও SCRAM-verifier JSON server থেকে সরানো হয়েছে; private env/certificate/backups রাখা হয়েছে।
-Git-tracked source archive SHA-256 `725a5881ba2f8b90eb7f98f67c0f76981061dcabb33351643dc7edab41a4426e`।
-Frontend archive SHA-256 `d2ab4e0137cbada185ed049ec0ae7d6810b0aa64fd3d01be987848794750558a`।
+Current source archive SHA-256 `e74597865b781d2174881da8693ad521ed9ad7818112cac882bddd23ffe470ca`।
+Current frontend archive SHA-256 `95a88cc8fc4529271d11129a02ebf63c89378133bbba033311b417676800ee6e`।
 Uploaded archive hashes server-এ মেলানো হয়েছে।
 
 ## PHP ও access
@@ -54,7 +56,8 @@ Server host key trust-on-first-use pin; strict checking পাস, independent p
 - Private `novaflow` schema owner `novaflow_migrator`; `novaflow_runtime` owner/admin নয়, CREATE বা migration membership নেই। দুটো role-ই NOSUPERUSER/NOCREATEDB/NOCREATEROLE/NOREPLICATION/NOBYPASSRLS।
 - anon/authenticated/service_role/PUBLIC CRM schema access পায় না। Data API settings-এ শুধু public/graphql_public exposed দেখা গেছে; private schema যোগ করা হয়নি।
 - Hostinger-এ random APP_KEY/password তৈরি ও private files-এ সংরক্ষণ। Plaintext chat/repo/frontend/connector-এ যায়নি; provisioning-এ কেবল SCRAM verifiers। Administrative migration history-ও private রাখতে হবে।
-- Existing Laravel-এর ৭টি migration হয়েছে। ১৬টি table সব private schema-তে/migrator-owned; public-এ zero tables। migrate:fresh/reset/destructive rollback নয়।
+- Laravel-এর ৮টি migration হয়েছে। ১৮টি table private schema-তে/migrator-owned; নতুন tables public API-তে expose নয়। migrate:fresh/reset/destructive rollback নয়।
+- নতুন customers/lead_activities runtime SELECT/INSERT only, UPDATE/DELETE/TRUNCATE/REFERENCES/TRIGGER নয়।
 - Named runtime grants: users/sessions/cache/passkeys/memberships প্রয়োজনীয় DML; tenants/leads/invitations SELECT/INSERT/UPDATE; audit/configuration history SELECT/INSERT only।
 - Runtime DDL/TRUNCATE/migrations read/history UPDATE/DELETE বা persistent job-table access পায় না। Queue sync।
 - Initial migrator login কাজ শেষে **NOLOGIN**। Future migration-এর জন্য reviewed temporary activation/rotation, শেষে disable; automated workflow নেই।
@@ -107,6 +110,12 @@ Verification globally bypass/public verification-link endpoint বানান�
 
 ## পরীক্ষার ফল
 
+Current CRM rollout-এর full evidence [verification report](VERIFICATION.md)-এ: local ৯৬ tests/৫৮৩ assertions,
+৪ frontend tests/build; [SQLite/PG CI](https://github.com/umar-vai/CRM/actions/runs/38176962975) পাস;
+live runtime rollback-only CRM workflows ও authenticated workspace/leads/customer list reads পাস।
+Private settings hash unchanged, migrator NOLOGIN, old functional release/public assets retained।
+নিচের initial deployment checks ঐতিহাসিক baseline; নতুন rollout evidence উপরে।
+
 - Locked Composer production dependencies installed; frontend build deployed; config/route/view caches তৈরি।
 - /, /login, /register, /up HTTP 200; browser-এ home/login। /up শুধু Laravel health, business/DB readiness নয়।
 - Live session cookie Secure/HttpOnly/SameSite=Lax; XSRF cookie Secure/SameSite=Lax এবং expected JavaScript-readable। Favicon HTTP 200।
@@ -141,7 +150,8 @@ reviewed migration activation/apply/disable → coordinated assets/release switc
 failed release-এ previous artifact restore। Automatic destructive DB rollback নয়। সাধারণ production rollout-এ manual approval থাকবে।
 Existing account-wide SSH key silently GitHub-এ upload নয়; persistent deployment access-এর scope নির্দিষ্টভাবে review করতে হবে।
 
-Old placeholder backup last-known-good functional CRM নয়; first release-এর আগে functional release ছিল না।
+Old placeholder backup functional CRM নয়। নতুন rollout-এ functional 033e9e9 release ও সম্পূর্ণ
+public CRM backup `shared/rollout-b26239d`-এ retained; restore drill এখনো বাকি।
 Public assets copied, symlink নয়; future switch-এ public assets/private current সামঞ্জস্যপূর্ণ রাখা প্রয়োজন।
 Migration.env চালানোর সময় cached runtime credentials accidentally ব্যবহার নয়; reviewed uncached migration configuration লাগবে।
 APP_KEY প্রতি release-এ regenerate নয়। Restore/rollback drill এবং external auth email/browser acceptance ছাড়া production readiness দাবি নয়।

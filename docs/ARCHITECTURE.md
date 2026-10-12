@@ -90,8 +90,10 @@ One customer per tenant/lead and unique tenant/activity request key enforce dupl
 Indexes start with tenant and lead for timeline pagination; actors have FK indexes.
 Activity note text lives in authorized business records, never audit metadata. GET responses
 for detail/customer list use no-store. Legacy leads are not given invented historical events.
-The prepared runtime grant asset allows SELECT/INSERT only on snapshots/activities;
-it is not evidence that these new tables or permissions are already live.
+Live rollout of tested source b26239d applied the CRM migration and named runtime grants:
+SELECT/INSERT only on snapshots/activities, no UPDATE/DELETE. Migrator is NOLOGIN again.
+Private prior release/public backup and retained hashed assets support code recovery;
+actual recovery and isolated database restore drills remain untested.
 
 ### Remaining production gates
 

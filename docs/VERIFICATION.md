@@ -1,6 +1,6 @@
 # Verification reports
 
-## CRM workflow block — 2026-10-12, repository implementation
+## CRM workflow block — 2026-10-12, implementation and live preview rollout
 
 New detail/edit/activity/conversion/customer-list increment: local gate passed with
 96 PHP tests, 583 assertions, 4 frontend tests, Pint, PHPStan zero errors, TypeScript,
@@ -21,9 +21,27 @@ Initial detail-page tests failed because the existing Vite manifest did not incl
 the new pages; rebuilding resolved those failures. Do not disable tenant scopes or
 claim checks passed before running the full post-build gate.
 
-The new code/migration/grant assets are NOT yet deployed to Hostinger/Supabase.
-UI has type/build checks; full new-block browser interaction/mobile/accessibility
-testing is still pending. Existing owner/team regression tests remain in the suite.
+Tested source b26239d is now deployed to Hostinger. Source archive SHA-256
+`e74597865b781d2174881da8693ad521ed9ad7818112cac882bddd23ffe470ca`, build archive
+`95a88cc8fc4529271d11129a02ebf63c89378133bbba033311b417676800ee6e` matched after transfer.
+Existing private env links reused; runtime app.env hash unchanged. New cached config is 0600.
+Uncached `--env=migration` ran only the reviewed new Laravel migration; eight total now.
+Migrator temporarily LOGIN with existing bounded expiry, restored NOLOGIN in finally.
+New private tables migration-role owned; runtime SELECT/INSERT true, UPDATE/DELETE false;
+anon/authenticated schema access false. Post-DDL security advisors returned no findings.
+New release used real runtime role in two synthetic workspaces inside rollback-only transaction:
+edit/stale-write, activity retry, conversion retry/snapshot, duplicate-review, fresh-role denial,
+redacted audit, audit-failure rollback, tenant isolation and no-context failure passed.
+All synthetic users/memberships/business rows absent after rollback; sequence gaps expected.
+Private backup `shared/rollout-b26239d/public` and previous-release link retained; old hashed
+assets preserved before atomic current symlink switch. This is not a tested rollback/DB restore.
+HTTPS /, /login, /up and new lead-detail asset returned 200; env/vendor/composer/storage/config
+probes 403; parent WordPress 200/PHP 8.2.34 unchanged, CRM PHP 8.4.26.
+Authenticated browser refreshed existing verified workspace, saw customer menu, opened customer
+list and lead list with zero records. No existing business records were mutated for smoke testing.
+Full new-block browser mutation/mobile/accessibility testing remains pending.
+Local full gate/build rerun successfully before artifact packaging (96 passed/583 assertions,
+five PG-only locally skipped). Existing owner/team regression tests remain in the suite.
 See [CRM phase report](PHASE_1_CRM_BN.md).
 
 User separately reported receiving and clicking the registration verification email

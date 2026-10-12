@@ -8,7 +8,8 @@ First Hostinger/Supabase operator release is live. Hostinger SMTP is configured 
 self-addressed message reached its Inbox with SPF/DKIM/DMARC pass headers. GitHub auto-deployment is not configured.
 The user reports receiving the registration email and verifying its link, and supplied a workspace
 dashboard screenshot. This is user acceptance evidence, not a complete automated browser E2E;
-password-reset delivery remains unverified. The new CRM workflow block is not yet deployed.
+password-reset delivery remains unverified. CRM workflows are live from tested source `b26239d`;
+authenticated workspace/leads/customers screens and rollback-only runtime smoke passed.
 Use synthetic data only. See the [deployment runbook](docs/HOSTINGER_PREVIEW_BN.md).
 
 ## Implemented
@@ -21,7 +22,7 @@ Use synthetic data only. See the [deployment runbook](docs/HOSTINGER_PREVIEW_BN.
 - Tenant-scoped leads: create, paginate, search, filter, update status.
 - Lead detail/edit with required version checks, note/call/meeting timeline, duplicate suggestions;
   owner/manager customer conversion with retry idempotency, read-only snapshots and customer search.
-  This new block is repository implementation pending live rollout; see the phase report.
+  This block is live in the synthetic preview; see the phase report for remaining browser E2E gates.
 - Business terminology: owner publishes immutable versions with stale-write protection.
 - Transactional audit records for lead changes, configuration publishing and team changes, excluding contact values and invitation secrets.
 - Bengali/English workspace navigation, overview and lead-screen labels based on workspace locale. Full app localization and locale editing are not implemented.

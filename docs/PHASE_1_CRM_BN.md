@@ -2,8 +2,8 @@
 
 ## কী তৈরি হয়েছে
 
-এই block repository-তে implemented; live rollout এখনো pending। পুরোনো live preview-তে
-নতুন menu/screens দেখা যাবে না যতক্ষণ migration, সীমিত grants ও release switch verify হয়।
+এই block এখন `crm.abdullahfahad.com`-এ live: CI-tested source `b26239d`। Migration,
+সীমিত grants, release switch, runtime smoke ও authenticated list screens verify হয়েছে।
 
 1. Lead list-এ নাম click করলে বিস্তারিত page। নাম, email, phone, source, status ও initial notes edit।
 2. একই lead অন্য কেউ বদলালে পুরোনো form save হবে না; “Reload latest data” দিয়ে নতুন version নিতে হবে।
@@ -15,7 +15,7 @@
 7. একই workspace-এ phone/email মিলে এমন সর্বোচ্চ পাঁচ lead suggestion। Matching customer আগে থাকলে
    দ্বিতীয় conversion blocked—নিজে review করতে হবে, automatic merge নয়।
 
-## ব্যবহার করার নিয়ম — rollout-এর পরে
+## ব্যবহার করার নিয়ম
 
 Workspaces → business → Leads → lead-এর নাম → তথ্য edit/Save অথবা কার্যক্রম যোগ করুন।
 Customer বানানোর আগে তথ্য ও duplicate suggestion দেখুন → “কাস্টমার বানান” → Customers list।
@@ -41,7 +41,7 @@ Timeline নতুন event আগে দেখায়, workspace timezone-এ �
   একই number shared হতে পারে—suggestion কাউকে একই ব্যক্তি বলে নিশ্চিত করে না।
 - Tenant-aware composite foreign keys, এক lead-এর এক customer, activity UUID uniqueness।
 - Audit-এ phone/email/name/note text নয়; শুধু action/field names/IDs/status/type।
-- New customer/activity runtime grants SELECT/INSERT only; grant script prepared, applied নয়।
+- New customer/activity runtime grants SELECT/INSERT only; live permissions verified।
 - Detail/customer responses no-store; free-text React escaped display, arbitrary HTML/code execute নয়।
 
 ## Tests ও সীমাবদ্ধতা
@@ -71,8 +71,12 @@ coordinated public assets/private release switch → HTTPS এবং authenticat
 Runtime/migrator permissions, SMTP, অন্য websites ও existing business rows preserve করতে হবে।
 Temporary migration LOGIN শেষে NOLOGIN; APP_KEY/DB runtime secrets regenerate নয়।
 GitHub push এখনো নিজে auto-deploy নয়।
-Current server source `033e9e9`; নতুন rollout-এর specific confirmation চাওয়া হয়েছে,
-উত্তর না পাওয়া পর্যন্ত নতুন migration/grants/live files পরিবর্তন হয়নি।
+Current server source `b26239d`; পুরোনো functional `033e9e9` release ও public files private
+backup-এ আছে। পুরোনো hashed assets retained। Private app.env hash একই—SMTP/APP_KEY/DB
+settings বদলায়নি। Migration শেষে migrator NOLOGIN। Synthetic two-workspace transaction-এ
+edit/stale/activity retry/conversion retry/duplicate/role/audit rollback/isolation পাস;
+সব synthetic records rollback ও না থাকা যাচাই। User workspace/leads/customers browser GET
+পাস; zero records অবস্থায় detail/form mutation-এর সম্পূর্ণ browser E2E করা হয়নি।
 
 Rollout verification-এর পরে পরবর্তী development block: industry package manifest/versioning,
 module dependency/entitlement validation এবং typed custom-field schema/preview/rollback।
