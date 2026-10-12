@@ -1,5 +1,5 @@
-import { Link, usePage } from '@inertiajs/react';
-import { translator } from '@/lib/platform-i18n';
+import { Link } from '@inertiajs/react';
+import { ChevronRight, Settings2 } from 'lucide-react';
 import type { Workspace } from '@/types/platform';
 
 export function WorkspaceNav({
@@ -10,23 +10,39 @@ export function WorkspaceNav({
     canConfigure?: boolean;
 }) {
     const base = '/workspaces/' + workspace.id;
-    const t = translator(workspace.locale);
-    const canManageTeam = usePage().props.canManageTeam === true;
+    const bn = workspace.locale === 'bn';
+
     return (
-        <nav
-            aria-label="Workspace navigation"
-            className="flex flex-wrap gap-4 border-b pb-4"
-        >
-            <Link href={base}>{t('overview')}</Link>
-            <Link href={base + '/leads'}>{t('leads')}</Link>
-            <Link href={base + '/customers'}>{t('customers')}</Link>
-            {canManageTeam && <Link href={base + '/team'}>{t('team')}</Link>}
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b pb-4">
+            <nav
+                aria-label={bn ? 'ওয়ার্কস্পেস অবস্থান' : 'Workspace breadcrumb'}
+                className="flex min-w-0 items-center gap-2 text-sm text-muted-foreground"
+            >
+                <Link className="shrink-0 transition-colors hover:text-foreground" href="/dashboard">
+                    {bn ? 'ব্যবসাসমূহ' : 'Businesses'}
+                </Link>
+                <ChevronRight className="size-4 shrink-0" aria-hidden="true" />
+                <Link
+                    className="truncate font-medium text-foreground transition-colors hover:underline"
+                    href={base}
+                    aria-current={window.location.pathname === base ? 'page' : undefined}
+                >
+                    {workspace.name}
+                </Link>
+            </nav>
             {canConfigure && (
-                <Link href={base + '/configuration'}>{t('configuration')}</Link>
+                <Link
+                    className="inline-flex min-h-9 items-center gap-2 rounded-lg border px-3 text-xs font-medium transition-colors hover:bg-muted"
+                    href={base + '/configuration'}
+                >
+                    <Settings2 className="size-3.5" aria-hidden="true" />
+                    {bn ? 'কনফিগারেশন' : 'Configuration'}
+                </Link>
             )}
-        </nav>
+        </div>
     );
 }
+
 export function FieldErrors({ errors }: { errors: Record<string, string> }) {
     return (
         Object.keys(errors).length > 0 && (
