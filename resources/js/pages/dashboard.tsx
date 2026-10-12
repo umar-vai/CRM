@@ -54,8 +54,12 @@ export default function Dashboard({
                         <Plus className="size-4" aria-hidden="true" />
                     )}
                     {createOpen
-                        ? bn ? 'বন্ধ করুন' : 'Close'
-                        : bn ? 'নতুন ব্যবসা' : 'New business'}
+                        ? bn
+                            ? 'বন্ধ করুন'
+                            : 'Close'
+                        : bn
+                          ? 'নতুন ব্যবসা'
+                          : 'New business'}
                 </Button>
             </header>
 
@@ -72,17 +76,23 @@ export default function Dashboard({
                         >
                             <div className="flex items-start justify-between gap-3">
                                 <div className="rounded-xl bg-muted p-3 text-muted-foreground">
-                                    <Building2 className="size-5" aria-hidden="true" />
+                                    <Building2
+                                        className="size-5"
+                                        aria-hidden="true"
+                                    />
                                 </div>
                                 <ArrowUpRight
-                                    className="size-4 text-muted-foreground transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                                    className="size-4 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
                                     aria-hidden="true"
                                 />
                             </div>
                             <div>
-                                <h2 className="font-semibold">{workspace.name}</h2>
+                                <h2 className="font-semibold">
+                                    {workspace.name}
+                                </h2>
                                 <p className="mt-1 text-xs text-muted-foreground">
-                                    {workspace.industry} · {workspace.currency} · {workspace.role}
+                                    {workspace.industry} · {workspace.currency}{' '}
+                                    · {workspace.role}
                                 </p>
                             </div>
                         </Link>
@@ -90,7 +100,10 @@ export default function Dashboard({
                 </section>
             ) : (
                 <section className="rounded-2xl border border-dashed p-6 text-center sm:p-10">
-                    <Building2 className="mx-auto size-8 text-muted-foreground" aria-hidden="true" />
+                    <Building2
+                        className="mx-auto size-8 text-muted-foreground"
+                        aria-hidden="true"
+                    />
                     <h2 className="mt-3 text-lg font-semibold">
                         {bn ? 'এখনো কোনো ব্যবসা যোগ হয়নি' : 'No workspace yet'}
                     </h2>
@@ -108,7 +121,9 @@ export default function Dashboard({
                     className="max-w-2xl rounded-2xl border bg-card p-5 shadow-sm sm:p-6"
                 >
                     <h2 className="text-lg font-semibold">
-                        {bn ? 'নতুন ব্যবসার ওয়ার্কস্পেস' : 'Create a business workspace'}
+                        {bn
+                            ? 'নতুন ব্যবসার ওয়ার্কস্পেস'
+                            : 'Create a business workspace'}
                     </h2>
                     <p className="mt-1 mb-5 text-sm text-muted-foreground">
                         {bn
@@ -129,7 +144,9 @@ export default function Dashboard({
                                 maxLength={100}
                                 autoFocus
                                 value={form.data.name}
-                                onChange={(event) => form.setData('name', event.target.value)}
+                                onChange={(event) =>
+                                    form.setData('name', event.target.value)
+                                }
                             />
                         </label>
                         <label className="space-y-2 text-sm font-medium">
@@ -137,7 +154,9 @@ export default function Dashboard({
                             <select
                                 className="flex min-h-10 w-full rounded-lg border bg-background px-3 text-sm"
                                 value={form.data.industry}
-                                onChange={(event) => form.setData('industry', event.target.value)}
+                                onChange={(event) =>
+                                    form.setData('industry', event.target.value)
+                                }
                             >
                                 {industries.map((industry) => (
                                     <option key={industry} value={industry}>
@@ -151,7 +170,9 @@ export default function Dashboard({
                             <select
                                 className="flex min-h-10 w-full rounded-lg border bg-background px-3 text-sm"
                                 value={form.data.locale}
-                                onChange={(event) => form.setData('locale', event.target.value)}
+                                onChange={(event) =>
+                                    form.setData('locale', event.target.value)
+                                }
                             >
                                 <option value="bn">বাংলা</option>
                                 <option value="en">English</option>

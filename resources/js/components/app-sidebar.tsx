@@ -57,7 +57,8 @@ export function AppSidebar() {
                   href: base + '/customers',
                   icon: ContactRound,
               },
-              ...(props.canManageTeam === true || path.startsWith(base + '/team')
+              ...(props.canManageTeam === true ||
+              path.startsWith(base + '/team')
                   ? [
                         {
                             title: bn ? 'টিম' : 'Team',
@@ -66,7 +67,8 @@ export function AppSidebar() {
                         },
                     ]
                   : []),
-              ...(props.canConfigure === true || path.startsWith(base + '/configuration')
+              ...(props.canConfigure === true ||
+              path.startsWith(base + '/configuration')
                   ? [
                         {
                             title: bn ? 'সেটিংস' : 'Configuration',
@@ -96,7 +98,10 @@ export function AppSidebar() {
                 <NavMain items={mainNavItems} />
                 {workspace && (
                     <SidebarGroup className="px-2 pt-4">
-                        <SidebarGroupLabel className="truncate" title={workspace.name}>
+                        <SidebarGroupLabel
+                            className="truncate"
+                            title={workspace.name}
+                        >
                             {workspace.name}
                         </SidebarGroupLabel>
                         <SidebarMenu>
@@ -107,7 +112,9 @@ export function AppSidebar() {
                                         isActive={
                                             path === item.href ||
                                             (item.href !== base &&
-                                                path.startsWith(item.href + '/'))
+                                                path.startsWith(
+                                                    item.href + '/',
+                                                ))
                                         }
                                         tooltip={{ children: item.title }}
                                     >

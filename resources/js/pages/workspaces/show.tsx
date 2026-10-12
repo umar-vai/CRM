@@ -40,7 +40,9 @@ export default function Show({
                     <p className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
                         {bn ? 'আপনার ব্যবসার ওভারভিউ' : 'Business overview'}
                     </p>
-                    <h1 className="text-3xl font-semibold tracking-tight">{workspace.name}</h1>
+                    <h1 className="text-3xl font-semibold tracking-tight">
+                        {workspace.name}
+                    </h1>
                     <p className="max-w-2xl text-sm text-muted-foreground">
                         {bn
                             ? 'লিডের বর্তমান অবস্থা দেখুন এবং প্রয়োজনীয় কাজ শুরু করুন।'
@@ -56,7 +58,10 @@ export default function Show({
                 </Link>
             </header>
 
-            <section aria-label={bn ? 'CRM পরিসংখ্যান' : 'CRM metrics'} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <section
+                aria-label={bn ? 'CRM পরিসংখ্যান' : 'CRM metrics'}
+                className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+            >
                 {metricCards.map(({ key, label, icon: Icon }) => (
                     <div
                         key={key}
@@ -72,7 +77,9 @@ export default function Show({
                         </div>
                         <p className="mt-4 text-3xl font-semibold tracking-tight tabular-nums">
                             {typeof metrics[key] === 'number'
-                                ? metrics[key].toLocaleString(bn ? 'bn-BD' : 'en-US')
+                                ? metrics[key].toLocaleString(
+                                      bn ? 'bn-BD' : 'en-US',
+                                  )
                                 : '—'}
                         </p>
                     </div>
@@ -97,20 +104,36 @@ export default function Show({
                             href={base + '/leads'}
                         >
                             <div className="flex items-center justify-between">
-                                <UsersRound className="size-5 text-muted-foreground" aria-hidden="true" />
-                                <ArrowRight className="size-4 text-muted-foreground transition-transform group-hover:translate-x-1" aria-hidden="true" />
+                                <UsersRound
+                                    className="size-5 text-muted-foreground"
+                                    aria-hidden="true"
+                                />
+                                <ArrowRight
+                                    className="size-4 text-muted-foreground transition-transform group-hover:translate-x-1"
+                                    aria-hidden="true"
+                                />
                             </div>
-                            <span className="font-medium">{t('manageLeads')}</span>
+                            <span className="font-medium">
+                                {t('manageLeads')}
+                            </span>
                         </Link>
                         <Link
                             className="group flex min-h-24 flex-col justify-between rounded-xl border p-4 transition-colors hover:border-foreground/30 hover:bg-muted/50 focus-visible:outline-2 focus-visible:outline-ring"
                             href={base + '/customers'}
                         >
                             <div className="flex items-center justify-between">
-                                <CheckCircle2 className="size-5 text-muted-foreground" aria-hidden="true" />
-                                <ArrowRight className="size-4 text-muted-foreground transition-transform group-hover:translate-x-1" aria-hidden="true" />
+                                <CheckCircle2
+                                    className="size-5 text-muted-foreground"
+                                    aria-hidden="true"
+                                />
+                                <ArrowRight
+                                    className="size-4 text-muted-foreground transition-transform group-hover:translate-x-1"
+                                    aria-hidden="true"
+                                />
                             </div>
-                            <span className="font-medium">{t('customers')}</span>
+                            <span className="font-medium">
+                                {t('customers')}
+                            </span>
                         </Link>
                     </div>
                 </section>
@@ -129,8 +152,13 @@ export default function Show({
                     ) : (
                         <ul className="space-y-3">
                             {plannedModules.map(([key, module]) => (
-                                <li key={key} className="flex items-center justify-between gap-3 border-b pb-3 last:border-b-0 last:pb-0">
-                                    <span className="text-sm font-medium">{module.name}</span>
+                                <li
+                                    key={key}
+                                    className="flex items-center justify-between gap-3 border-b pb-3 last:border-b-0 last:pb-0"
+                                >
+                                    <span className="text-sm font-medium">
+                                        {module.name}
+                                    </span>
                                     <span className="rounded-full bg-muted px-2.5 py-1 text-xs text-muted-foreground">
                                         {t('planned')}
                                     </span>

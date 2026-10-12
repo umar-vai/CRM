@@ -19,7 +19,10 @@ export function WorkspaceNav({
                 aria-label={bn ? 'ওয়ার্কস্পেস অবস্থান' : 'Workspace breadcrumb'}
                 className="flex min-w-0 items-center gap-2 text-sm text-muted-foreground"
             >
-                <Link className="shrink-0 transition-colors hover:text-foreground" href="/dashboard">
+                <Link
+                    className="shrink-0 transition-colors hover:text-foreground"
+                    href="/dashboard"
+                >
                     {bn ? 'ব্যবসাসমূহ' : 'Businesses'}
                 </Link>
                 <ChevronRight className="size-4 shrink-0" aria-hidden="true" />
